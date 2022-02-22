@@ -1,5 +1,5 @@
 <template>
-  <div className="font-koho">
+  <div className="font-koho text-gray-700">
     <Banner />
 
     <RouterView />

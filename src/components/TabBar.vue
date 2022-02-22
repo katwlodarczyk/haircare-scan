@@ -9,10 +9,14 @@
     >
       <img
         v-if="!isActive"
-        src="./icons/dashboard-inactive.svg"
+        src="../assets/icons/dashboard-inactive.svg"
         alt="dashboard-icon"
       />
-      <img v-else src="./icons/dashboard-active.svg" alt="dashboard-icon" />
+      <img
+        v-else
+        src="../assets/icons/dashboard-active.svg"
+        alt="dashboard-icon"
+      />
       <span :class="isActive ? 'font-semibold' : ''">Dashboard</span>
     </RouterLink>
     <RouterLink
@@ -22,10 +26,14 @@
     >
       <img
         v-if="!isActive"
-        src="./icons/education-inactive.svg"
+        src="../assets/icons/education-inactive.svg"
         alt="education-icon"
       />
-      <img v-else src="./icons/education-active.svg" alt="education-icon" />
+      <img
+        v-else
+        src="../assets/icons/education-active.svg"
+        alt="education-icon"
+      />
       <span :class="isActive ? 'font-semibold' : ''"
         >Education</span
       ></RouterLink
@@ -33,9 +41,9 @@
     <RouterLink
       to="/scanner"
       class="flex flex-col justify-center items-center space-y-2.5"
-       v-slot="{ isActive }"
+      v-slot="{ isActive }"
     >
-      <img src="./icons/scan.svg" alt="scanner-icon" />
+      <img src="../assets/icons/scan.svg" alt="scanner-icon" />
       <span :class="isActive ? 'font-semibold' : ''">Scanner</span>
     </RouterLink>
     <RouterLink
@@ -45,10 +53,14 @@
     >
       <img
         v-if="!isActive"
-        src="./icons/favourite-inactive.svg"
+        src="../assets/icons/favourite-inactive.svg"
         alt="favourive-icon"
       />
-      <img v-else src="./icons/favourite-active.svg" alt="favourite-icon" />
+      <img
+        v-else
+        src="../assets/icons/favourite-active.svg"
+        alt="favourite-icon"
+      />
       <span :class="isActive ? 'font-semibold' : ''">Favourite</span>
     </RouterLink>
     <RouterLink
@@ -58,10 +70,14 @@
     >
       <img
         v-if="!isActive"
-        src="./icons/settings-inactive.svg"
+        src="../assets/icons/settings-inactive.svg"
         alt="setting-icon"
       />
-      <img v-else src="./icons/settings-active.svg" alt="settings-icon" />
+      <img
+        v-else
+        src="../assets/icons/settings-active.svg"
+        alt="settings-icon"
+      />
       <span :class="isActive ? 'font-semibold' : ''">Settings</span>
     </RouterLink>
   </nav>
