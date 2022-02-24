@@ -3,9 +3,10 @@
     class="w-full flex flex-col flex-none absolute justify-center items-center inset-y-1/4"
   >
     <img class="mb-6 flex flex-none" src="../assets/images/lady-back.svg" />
-    <p>You haven't scanned anything yet.</p>
-    <p class="mb-4">Use the scanner.</p>
+    <p>{{ topText }}</p>
+    <p class="mb-4">{{ bottomText }}</p>
     <svg
+      v-if="withArrow === true"
       id="arrow"
       xmlns="http://www.w3.org/2000/svg"
       class="h-10 w-10"
@@ -25,7 +26,22 @@
 
 <script>
 export default {
-  name: "EmptyHome",
+  name: "EmptyState",
+  props: {
+    withArrow: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    topText: {
+      type: String,
+      required: true,
+    },
+    bottomText: {
+      type: String,
+      required: false,
+    },
+  },
   setup() {
     return {};
   },

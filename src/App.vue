@@ -2,7 +2,7 @@
   <div className="font-koho text-gray-700">
     <Banner />
 
-    <RouterView />
+    <RouterView class="px-6 py-36 flex flex-col justify-center text-center" />
   </div>
   <TabBar />
 </template>
