@@ -4,7 +4,7 @@
   >
     <RouterLink
       to="/"
-      class="flex flex-col justify-center items-center space-y-2.5"
+      class="flex flex-col justify-center items-center space-y-3"
       v-slot="{ isActive }"
     >
       <img
