@@ -13,6 +13,15 @@ module.exports = {
       fontFamily: {
         koho: "KoHo",
       },
+      width: {
+        37: "9.375rem",
+      },
+      height: {
+        37: "9.375rem",
+      },
+      boxShadow: {
+        purple: "box-shadow: 0px 4px 8px rgba(151, 100, 199, 0.18)",
+      },
     },
   },
   plugins: [],

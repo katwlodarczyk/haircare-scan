@@ -1,8 +1,8 @@
 <template>
   <div
-    class="w-full flex flex-col absolute justify-center items-center inset-y-1/4"
+    class="w-full flex flex-col flex-none absolute justify-center items-center inset-y-1/4"
   >
-    <img class="w-1/4 mb-6" src="../assets/images/lady-back.svg" />
+    <img class="mb-6 flex flex-none" src="../assets/images/lady-back.svg" />
     <p>You haven't scanned anything yet.</p>
     <p class="mb-4">Use the scanner.</p>
     <svg
