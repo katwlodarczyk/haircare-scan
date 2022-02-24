@@ -6,6 +6,7 @@ module.exports = {
         "brand-purple": "#9764C7",
         "brand-pink": "#F2AEE7",
         "brand-nude": "#F8F5F7",
+        "brand-pale": "#FDFDFD",
       },
       fontSize: {
         xxxs: "10px",

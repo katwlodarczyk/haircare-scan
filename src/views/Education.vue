@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-auto mx-auto">
+  <div class="flex-auto mx-auto px-6 ">
     <img class="mb-4 ml-2 px-8" src="../assets/images/education.svg" />
     <h1 class="font-medium text-3xl pb-1">Hair Education</h1>
     <p class="leading-5 mb-5">
