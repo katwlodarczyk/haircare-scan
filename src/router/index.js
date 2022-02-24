@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Dashboard from "../views/Dashboard.vue";
 import Education from "../views/Education.vue";
 import Favourite from "../views/Favourite.vue";
+import Settings from "../views/Settings.vue";
 import PageNotFound from "../views/404.vue";
 
 const router = createRouter({
@@ -30,7 +31,7 @@ const router = createRouter({
     {
       path: "/settings",
       name: "settings",
-      component: Dashboard,
+      component: Settings,
     },
     {
       path: "/:pathMatch(.*)*",
