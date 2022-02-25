@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import Welcome from "../views/WelcomeView.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Education from "../views/Education.vue";
 import Favourite from "../views/Favourite.vue";
@@ -17,6 +18,11 @@ const router = createRouter({
     );
   },
   routes: [
+    {
+      path: "/",
+      name: "welcome",
+      component: Welcome,
+    },
     {
       path: "/dashboard",
       name: "dashboard",

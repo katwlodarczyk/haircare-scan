@@ -1,17 +1,18 @@
 <template>
-  <div className="font-koho text-gray-700">
+  <div class="font-koho text-gray-700">
     <Banner />
 
     <RouterView
       v-slot="{ Component }"
-      class="py-36 flex flex-col justify-center text-center"
+      class="flex flex-col justify-center text-center"
+      :class="!isAuthenticated ? 'py-36' : ''"
     >
       <transition name="fade" mode="out-in">
         <component :is="Component" :key="$route.path"></component>
       </transition>
     </RouterView>
+    <TabBar v-if="!isAuthenticated"/>
   </div>
-  <TabBar />
 </template>
 
 <script setup>

@@ -103,7 +103,12 @@
       <div
         class="w-full flex flex-row justify-between odd:bg-brand-pale even:bg-brand-nude px-6 py-4 text-lg space-x-4"
       >
-        <div class="flex flex-row space-x-4">Contact Us</div>
+      <!-- @todo change to haircare scan email + change subject -->
+        <a
+          href="mailto:katbwlodarczyk@gmail.com?subject=Mail from Our Site"
+          class="flex flex-row space-x-4"
+          >Contact Us</a
+        >
       </div>
 
       <div
