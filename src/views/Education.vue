@@ -12,10 +12,28 @@
     <div
       class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"
     >
-      <article-card></article-card>
-      <article-card></article-card>
-      <article-card></article-card>
-      <article-card></article-card>
+      <article-card
+        @click="
+          $router.push({
+            name: 'article',
+            params: {
+              articleId: '2',
+              articleImage: '/src/assets/images/lady-back.svg',
+              title: 'How to choose a shampoo?',
+            },
+          })
+        "
+        articleImage="/src/assets/images/lady-back.svg"
+      ></article-card>
+      <article-card
+        articleImage="/src/assets/images/lady-back.svg"
+      ></article-card>
+      <article-card
+        articleImage="/src/assets/images/lady-back.svg"
+      ></article-card>
+      <article-card
+        articleImage="/src/assets/images/lady-back.svg"
+      ></article-card>
     </div>
   </div>
 </template>
