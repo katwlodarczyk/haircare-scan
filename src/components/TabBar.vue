@@ -3,7 +3,7 @@
     class="font-koho z-30 fixed bottom-0 w-full bg-brand-nude text-brand-purple shadow-xl flex flex-row items-center justify-between px-6 pt-4 pb-8 text-xs"
   >
     <RouterLink
-      to="/"
+      to="/dashboard"
       class="flex flex-col justify-center items-center space-y-3"
       v-slot="{ isActive }"
     >

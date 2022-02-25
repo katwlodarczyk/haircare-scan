@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-row odd:bg-brand-pale even:bg-brand-nude px-6 py-5 space-x-4"
+    class="flex flex-row justify-between odd:bg-brand-pale even:bg-brand-nude px-6 py-5 space-x-4"
   >
     <img v-if="withPhoto" src="" alt="" />
     <img v-else src="../assets/icons/eye.svg" alt="eye icon" />
