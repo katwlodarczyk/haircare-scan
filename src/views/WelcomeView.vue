@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen w-screen bg-brand-nude items-center">
-    <slider></slider>
+    <SliderComponent></SliderComponent>
     <div>
       <BrandButton text="Create an account"></BrandButton>
       <p class="pt-4">
@@ -12,9 +12,9 @@
 
 <script>
 import BrandButton from "../components/BrandButton.vue";
-import Slider from "../components/slider.vue";
+import SliderComponent from "../components/SliderComponent.vue";
 export default {
   setup() {},
-  components: { BrandButton, Slider },
+  components: { BrandButton, SliderComponent },
 };
 </script>
