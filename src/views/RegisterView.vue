@@ -87,7 +87,6 @@ export default {
     const handleEmailRegister = async (registerForm) => {
       try {
         const { email, password } = registerForm;
-        console.log(email, password);
         await createUserWithEmailAndPassword(auth, email, password);
         await router.replace("/dashboard");
       } catch (error) {
@@ -100,7 +99,7 @@ export default {
         if (method === "google") {
           await signInGoogleUser();
         }
-        // await navigate("../", { replace: true });
+       await router.replace("/dashboard");
       } catch (error) {
         console.log("error");
       }

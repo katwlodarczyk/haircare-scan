@@ -9,12 +9,19 @@
       :id="name"
       autocomplete
       :placeholder="placeholder"
-      class="mt-1 outline-none focus:ring-brand-pink focus:border-brand-pink block w-full shadow-sm py-3 px-4 rounded-lg"
+      class="mt-1 outline-none block w-full shadow-sm py-3 px-4 rounded-lg"
+      :class="
+        !meta.valid && meta.validated || serverErrorMessage
+          ? 'border border-red-600 text-red-600 focus:ring-red-600 focus:border-red-600'
+          : 'focus:ring-brand-pink focus:border-brand-pink'
+      "
     />
   </div>
 </template>
 
 <script>
+import { useField } from 'vee-validate';
+
 export default {
   props: {
     modelValue: {
@@ -37,8 +44,20 @@ export default {
       type: String,
       required: true,
     },
+    serverErrorMessage: {
+      type: String,
+    },
   },
   emits: ["update:modelValue"],
-  setup() {},
+  setup(props) {
+    const { value, meta } = useField(props.name, undefined, {
+      initialValue: '',
+    });
+
+    return {
+      value,
+      meta,
+    };
+  },
 };
 </script>
