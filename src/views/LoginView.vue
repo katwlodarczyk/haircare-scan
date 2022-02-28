@@ -8,13 +8,22 @@
       label="Password"
       class="mt-4 mb-10"
     ></InputField>
-    <BrandButton class="w-2/3 mx-auto mb-4" text="Login"></BrandButton>
+    <BrandButton class="w-2/3 mx-auto mb-4">Login</BrandButton>
     <p class="text-sm">
       or
       <router-link to="/register" class="font-medium"
         >Create an account</router-link
       >
     </p>
+    <BrandButton class="mx-auto mt-12 flex flex-row" type="dark">
+      or use your
+      <img
+        src="../assets/icons/google-icon.svg"
+        alt="google icon"
+        class="px-2"
+      />
+      account
+    </BrandButton>
   </div>
 </template>
 

@@ -1,26 +1,113 @@
 <template>
   <div class="bg-brand-nude h-screen px-10 flex flex-col justify-center">
     <h1 class="text-2xl font-medium pb-8">Create a new account</h1>
-    <InputField name="email" type="text" label="Email address"></InputField>
-    <InputField
-      name="password"
-      type="password"
-      label="Password"
-      class="mt-4 mb-10"
-    ></InputField>
-    <BrandButton class="w-2/3 mx-auto mb-4" text="Register"></BrandButton>
+    <Form
+      :validation-schema="schema"
+      id="registerForm"
+      @submit="handleSubmit(onEmailRegister, onSubmit)"
+    >
+      <Field name="email"
+        ><InputField
+          v-model="registerForm.email"
+          name="email"
+          type="text"
+          label="Email address"
+          :rules="schema.email"
+          placeholder="hello@example.com"
+        ></InputField
+      ></Field>
+      <ErrorMessage class="text-red-600 text-xs flex mt-1" name="email" />
+      <Field name="password">
+        <InputField
+          v-model="registerForm.password"
+          name="password"
+          type="password"
+          label="Password"
+          class="mt-8"
+          :rules="schema.password"
+          placeholder="******"
+        ></InputField>
+      </Field>
+      <ErrorMessage class="text-red-600 text-xs flex mt-1" name="password" />
+
+      <BrandButton class="w-2/3 mx-auto mb-4 mt-10">Register</BrandButton>
+    </Form>
     <p class="text-sm">
       Have an account?
       <router-link to="/login" class="font-medium">Login</router-link>
     </p>
+    <BrandButton
+      @click="() => onSocialSubmit('google')"
+      class="mx-auto mt-12 flex flex-row"
+      type="dark"
+    >
+      or use your
+      <img
+        src="../assets/icons/google-icon.svg"
+        alt="google icon"
+        class="px-2"
+      />
+      account
+    </BrandButton>
   </div>
 </template>
 
 <script>
 import InputField from "../components/InputField.vue";
 import BrandButton from "../components/BrandButton.vue";
+import { useState } from "../composables/state";
+import useAuth from "../services/useAuth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+import { reactive } from "@vue/reactivity";
+
 export default {
-  setup() {},
-  components: { InputField, BrandButton },
+  components: { InputField, BrandButton, Form, Field, ErrorMessage },
+  setup() {
+    const [serverErrorMessage, setServerErrorMessage] = useState();
+    const { signInGoogleUser } = useAuth();
+    const auth = getAuth();
+
+    const schema = yup.object().shape({
+      email: yup.string().required().email(),
+      password: yup.string().required().min(8),
+    });
+
+    const registerForm = reactive({
+      email: "",
+      password: "",
+    });
+
+    const handleEmailRegister = async (registerForm) => {
+      try {
+        const { email, password } = registerForm;
+        console.log(email, password);
+        await createUserWithEmailAndPassword(auth, email, password);
+        // await navigate("../", { replace: true });
+      } catch (error) {
+        setServerErrorMessage(error.message);
+      }
+    };
+
+    const handleSocialSubmit = async (method) => {
+      try {
+        if (method === "google") {
+          await signInGoogleUser();
+        }
+        // await navigate("../", { replace: true });
+      } catch (error) {
+        console.log("error");
+      }
+    };
+
+    return {
+      handleEmailRegister,
+      handleSocialSubmit,
+      serverErrorMessage,
+      schema,
+      registerForm,
+    };
+  },
 };
 </script>

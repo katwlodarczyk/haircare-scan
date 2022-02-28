@@ -2,9 +2,14 @@
   <div class="h-screen w-screen bg-brand-nude items-center">
     <SliderComponent></SliderComponent>
     <div>
-      <BrandButton text="Create an account"></BrandButton>
+      <router-link to="/register"
+        ><BrandButton>Create an account</BrandButton></router-link
+      >
       <p class="pt-4">
-        Have an account? <span class="font-medium">Login</span>
+        Have an account?
+        <router-link to="/login"
+          ><span class="font-medium">Login</span></router-link
+        >
       </p>
     </div>
   </div>
