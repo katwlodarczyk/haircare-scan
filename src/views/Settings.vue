@@ -103,9 +103,9 @@
       <div
         class="w-full flex flex-row justify-between odd:bg-brand-pale even:bg-brand-nude px-6 py-4 text-lg space-x-4"
       >
-      <!-- @todo change to haircare scan email + change subject -->
+        <!-- @todo change to haircare scan email + change subject -->
         <a
-          href="mailto:katbwlodarczyk@gmail.com?subject=Mail from Our Site"
+          href="mailto:haircare-scan@gmail.com?subject=Mail from Our Site"
           class="flex flex-row space-x-4"
           >Contact Us</a
         >
@@ -151,17 +151,27 @@
         </svg>
       </div>
     </div>
+    <BrandButton @click="signOut" class="mx-auto w-11/12 mt-3"
+      >Sign out</BrandButton
+    >
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
 import ViewHeader from "../components/ViewHeader.vue";
+import BrandButton from "../components/BrandButton.vue";
+import useAuth from "../services/useAuth";
+import { useRouter } from "vue-router";
+
 export default {
   components: {
     ViewHeader,
+    BrandButton,
   },
   setup() {
+    const router = useRouter();
+    const { user, signUserOut } = useAuth();
     const openEmailEdit = ref(false);
     const openPasswordEdit = ref(false);
 
@@ -175,7 +185,24 @@ export default {
       openPasswordEdit.value = false;
     };
 
-    return { openEmailEdit, saveEmailEdit, openPasswordEdit, savePasswordEdit };
+    const signOut = async () => {
+      try {
+        await signUserOut();
+        await localStorage.removeItem("userUID");
+        await router.replace("/");
+      } catch (e) {
+        console.log(e.message);
+      }
+    };
+
+    return {
+      openEmailEdit,
+      saveEmailEdit,
+      openPasswordEdit,
+      savePasswordEdit,
+      signOut,
+      user,
+    };
   },
 };
 </script>
