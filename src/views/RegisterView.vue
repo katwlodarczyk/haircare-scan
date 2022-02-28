@@ -89,7 +89,7 @@ export default {
         const { email, password } = registerForm;
         console.log(email, password);
         await createUserWithEmailAndPassword(auth, email, password);
-        await router.push("/dashboard");
+        await router.replace("/dashboard");
       } catch (error) {
         setServerErrorMessage(error.message);
       }
