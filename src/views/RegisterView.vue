@@ -4,9 +4,9 @@
     <Form
       :validation-schema="schema"
       id="registerForm"
-      @submit="handleSubmit(onEmailRegister, onSubmit)"
+      @submit="handleEmailRegister"
     >
-      <Field name="email"
+      <Field name="email" v-model="registerForm.email"
         ><InputField
           v-model="registerForm.email"
           name="email"
@@ -17,7 +17,7 @@
         ></InputField
       ></Field>
       <ErrorMessage class="text-red-600 text-xs flex mt-1" name="email" />
-      <Field name="password">
+      <Field name="password" v-model="registerForm.password">
         <InputField
           v-model="registerForm.password"
           name="password"
@@ -29,8 +29,11 @@
         ></InputField>
       </Field>
       <ErrorMessage class="text-red-600 text-xs flex mt-1" name="password" />
+      <div v-show="serverErrorMessage" class="text-red-600 text-xs flex mt-1">{{ serverErrorMessage }}</div>
 
-      <BrandButton class="w-2/3 mx-auto mb-4 mt-10">Register</BrandButton>
+      <BrandButton type="submit" class="w-2/3 mx-auto mb-4 mt-10"
+        >Register</BrandButton
+      >
     </Form>
     <p class="text-sm">
       Have an account?
@@ -61,10 +64,12 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { reactive } from "@vue/reactivity";
+import { useRouter } from "vue-router";
 
 export default {
   components: { InputField, BrandButton, Form, Field, ErrorMessage },
   setup() {
+    const router = useRouter();
     const [serverErrorMessage, setServerErrorMessage] = useState();
     const { signInGoogleUser } = useAuth();
     const auth = getAuth();
@@ -84,7 +89,7 @@ export default {
         const { email, password } = registerForm;
         console.log(email, password);
         await createUserWithEmailAndPassword(auth, email, password);
-        // await navigate("../", { replace: true });
+        await router.push("/dashboard");
       } catch (error) {
         setServerErrorMessage(error.message);
       }
