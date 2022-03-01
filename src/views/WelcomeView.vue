@@ -2,7 +2,7 @@
   <div
     class="h-screen w-screen flex flex-col space-y-4 bg-brand-nude items-center"
   >
-    <Banner withSlogan="true" class="mb-4" />
+    <Banner withSlogan class="mb-4" />
     <SliderComponent></SliderComponent>
     <div>
       <router-link to="/register"
@@ -22,6 +22,7 @@
 import BrandButton from "../components/BrandButton.vue";
 import SliderComponent from "../components/SliderComponent.vue";
 import Banner from "../components/Banner.vue";
+
 export default {
   setup() {},
   components: { BrandButton, SliderComponent, Banner },

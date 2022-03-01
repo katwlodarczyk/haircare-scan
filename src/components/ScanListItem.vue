@@ -57,6 +57,10 @@ export default {
       type: String,
       required: true,
     },
+    withPhoto: {
+      type: Boolean,
+      required: false,
+    },
   },
   setup() {
     let displayMenu = ref(false);

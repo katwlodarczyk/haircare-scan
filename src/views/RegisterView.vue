@@ -1,6 +1,6 @@
 <template>
   <div class="bg-brand-nude h-screen flex flex-col space-y-10">
-    <Banner withSlogan="true" class="" />
+    <Banner withSlogan class="" />
     <div class="px-10">
       <h1 class="text-2xl font-medium pb-8">Create a new account</h1>
       <Form
