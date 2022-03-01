@@ -1,47 +1,53 @@
 <template>
-  <div class="bg-brand-nude h-screen px-10 flex flex-col justify-center">
-    <h1 class="text-2xl font-medium pb-8">Create a new account</h1>
-    <Form
-      :validation-schema="schema"
-      id="registerForm"
-      @submit="handleEmailRegister"
-    >
-      <Field name="email" v-model="registerForm.email"
-        ><InputField
-          v-model="registerForm.email"
-          name="email"
-          type="text"
-          label="Email address"
-          :rules="schema.email"
-          placeholder="hello@example.com"
-        ></InputField
-      ></Field>
-      <ErrorMessage class="text-red-600 text-xs flex mt-1" name="email" />
-      <Field name="password" v-model="registerForm.password">
-        <InputField
-          v-model="registerForm.password"
-          name="password"
-          type="password"
-          label="Password"
-          class="mt-8"
-          :rules="schema.password"
-          placeholder="******"
-        ></InputField>
-      </Field>
-      <ErrorMessage class="text-red-600 text-xs flex mt-1" name="password" />
-      <div v-show="serverErrorMessage" class="text-red-600 text-xs flex mt-1">{{ serverErrorMessage }}</div>
-
-      <BrandButton type="submit" class="w-2/3 mx-auto mb-4 mt-10"
-        >Register</BrandButton
+  <div class="bg-brand-nude h-screen flex flex-col space-y-10">
+    <Banner withSlogan="true" class="" />
+    <div class="px-10">
+      <h1 class="text-2xl font-medium pb-8">Create a new account</h1>
+      <Form
+        :validation-schema="schema"
+        id="registerForm"
+        @submit="handleEmailRegister"
       >
-    </Form>
-    <p class="text-sm">
-      Have an account?
-      <router-link to="/login" class="font-medium">Login</router-link>
-    </p>
+        <Field name="email" v-model="registerForm.email"
+          ><InputField
+            v-model="registerForm.email"
+            name="email"
+            type="text"
+            label="Email address"
+            :rules="schema.email"
+            placeholder="hello@example.com"
+          ></InputField
+        ></Field>
+        <ErrorMessage class="text-red-600 text-xs flex mt-1" name="email" />
+        <Field name="password" v-model="registerForm.password">
+          <InputField
+            v-model="registerForm.password"
+            name="password"
+            type="password"
+            label="Password"
+            class="mt-8"
+            :rules="schema.password"
+            placeholder="******"
+          ></InputField>
+        </Field>
+        <ErrorMessage class="text-red-600 text-xs flex mt-1" name="password" />
+        <div v-show="serverErrorMessage" class="text-red-600 text-xs flex mt-1">
+          {{ serverErrorMessage }}
+        </div>
+
+        <BrandButton type="submit" class="w-2/3 mx-auto mb-4 mt-10"
+          >Register</BrandButton
+        >
+      </Form>
+      <p class="text-sm">
+        Have an account?
+        <router-link to="/login" class="font-medium">Login</router-link>
+      </p>
+    </div>
+
     <BrandButton
       @click="() => onSocialSubmit('google')"
-      class="mx-auto mt-12 flex flex-row"
+      class="mx-auto mt-12 flex flex-row fixed inset-x-0 bottom-20"
       type="dark"
     >
       or use your
@@ -65,9 +71,10 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { reactive } from "@vue/reactivity";
 import { useRouter } from "vue-router";
+import Banner from "../components/Banner.vue";
 
 export default {
-  components: { InputField, BrandButton, Form, Field, ErrorMessage },
+  components: { Banner, InputField, BrandButton, Form, Field, ErrorMessage },
   setup() {
     const router = useRouter();
     const [serverErrorMessage, setServerErrorMessage] = useState();
@@ -99,7 +106,7 @@ export default {
         if (method === "google") {
           await signInGoogleUser();
         }
-       await router.replace("/dashboard");
+        await router.replace("/dashboard");
       } catch (error) {
         console.log("error");
       }

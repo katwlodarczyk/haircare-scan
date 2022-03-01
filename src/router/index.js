@@ -39,33 +39,48 @@ const router = createRouter({
       path: "/dashboard",
       name: "dashboard",
       component: Dashboard,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/education",
       name: "education",
       component: Education,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/education/:articleId",
       name: "article",
       component: ArticleView,
       props: true,
-      meta: { transition: "slide-left" },
+      meta: { transition: "slide-left", requiresAuth: true },
     },
     {
       path: "/scanner",
       name: "scanner",
       component: Dashboard,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/favourite",
       name: "favourite",
       component: Favourite,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/settings",
       name: "settings",
       component: Settings,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/:pathMatch(.*)*",
@@ -73,6 +88,15 @@ const router = createRouter({
       component: PageNotFound,
     },
   ],
+});
+router.beforeEach(async (to, from) => {
+  if (
+    to.meta.requiresAuth &&
+    !localStorage.getItem("userUID") &&
+    to.name !== "login"
+  ) {
+    return { name: "login" };
+  }
 });
 
 export default router;
