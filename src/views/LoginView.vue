@@ -48,7 +48,10 @@
         >
       </p>
     </div>
-    <BrandButton class="mx-auto mt-12 flex flex-row" type="dark">
+    <BrandButton
+      class="mx-auto mt-12 flex flex-row fixed inset-x-0 bottom-20"
+      type="dark"
+    >
       or use your
       <img
         src="../assets/icons/google-icon.svg"
