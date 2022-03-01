@@ -10,13 +10,14 @@
           <div class="font-medium">
             <div v-if="openEmailEdit === true">
               <input
+                v-model="newEmail"
                 type="text"
                 name="email"
-                placeholder="jane@example.com"
+                :placeholder="user.email"
                 class="rounded-lg bg-brand-pale px-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
               />
             </div>
-            <span v-else class="">jane@example.com</span>
+            <span v-else class="">{{ user.email }}</span>
           </div>
         </div>
         <svg
@@ -59,13 +60,14 @@
           <div class="font-medium">
             <div v-if="openPasswordEdit === true">
               <input
+                v-model="newPassword"
                 type="password"
                 name="password"
-                placeholder="******"
+                placeholder="**********"
                 class="rounded-lg bg-brand-pale px-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
               />
             </div>
-            <span v-else class="">******</span>
+            <span v-else class="">**********</span>
           </div>
         </div>
         <svg
@@ -163,6 +165,7 @@ import ViewHeader from "../components/ViewHeader.vue";
 import BrandButton from "../components/BrandButton.vue";
 import useAuth from "../services/useAuth";
 import { useRouter } from "vue-router";
+import { getAuth, updateEmail, updatePassword } from "firebase/auth";
 
 export default {
   components: {
@@ -174,15 +177,36 @@ export default {
     const { user, signUserOut } = useAuth();
     const openEmailEdit = ref(false);
     const openPasswordEdit = ref(false);
+    const newEmail = ref();
+    const newPassword = ref();
+    const auth = getAuth();
 
     const saveEmailEdit = () => {
-      console.log("saved email edit");
-      openEmailEdit.value = false;
+      if (user.email !== newEmail.value) {
+        updateEmail(auth.currentUser, newEmail.value)
+          .then(() => {
+            openEmailEdit.value = false;
+            newEmail.value = "";
+          })
+          .catch((error) => {
+            // @todo add toast
+            console.log(error);
+          });
+      } else {
+        openEmailEdit.value = false;
+      }
     };
 
     const savePasswordEdit = () => {
-      console.log("saved password edit");
-      openPasswordEdit.value = false;
+      updatePassword(auth.currentUser, newPassword.value)
+        .then(() => {
+          console.log("it works");
+          openPasswordEdit.value = false;
+          newPassword.value = "";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
 
     const signOut = async () => {
@@ -202,6 +226,8 @@ export default {
       savePasswordEdit,
       signOut,
       user,
+      newEmail,
+      newPassword,
     };
   },
 };
