@@ -8,6 +8,7 @@ import Favourite from "../views/Favourite.vue";
 import Settings from "../views/Settings.vue";
 import PageNotFound from "../views/404.vue";
 import ArticleView from "../views/ArticleView.vue";
+import Scanner from "../views/Scanner.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,7 +62,7 @@ const router = createRouter({
     {
       path: "/scanner",
       name: "scanner",
-      component: Dashboard,
+      component: Scanner,
       meta: {
         requiresAuth: true,
       },

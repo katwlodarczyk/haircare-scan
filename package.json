@@ -8,7 +8,10 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "easy-js-camera": "^2.1.0",
+    "easy-vue-camera": "^1.0.5",
     "firebase": "^9.6.7",
+    "simple-vue-camera": "^1.0.2",
     "swiper": "^8.0.6",
     "vee-validate": "^4.5.9",
     "vue": "^3.2.31",
