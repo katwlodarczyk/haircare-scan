@@ -23,9 +23,34 @@
       autoplay
     >
     </camera>
-    <img v-else :src="capturedImage" alt="captured" class="w-screen h-screen" />
-    <div class="flex flex-row justify-between px-6 py-4 mx-auto">
+    <img v-else :src="capturedImage" alt="captured" class="w-screen h-max" />
+    <div
+      class="flex flex-row justify-between items-center text-white px-6 py-4"
+      :class="!capturedImage ? 'mx-auto' : ''"
+    >
+      <BrandButton
+        v-show="capturedImage"
+        @click="retake"
+        class="flex justify-between items-center space-x-2"
+      >
+        <span>Retake</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+          />
+        </svg>
+      </BrandButton>
       <svg
+        v-show="!capturedImage"
         @click="snapshot"
         class="fill-current text-white"
         width="64"
@@ -44,6 +69,27 @@
           fill="#ffffff"
         />
       </svg>
+      <BrandButton
+        v-show="capturedImage"
+        type="dark"
+        class="flex justify-between items-center space-x-2"
+      >
+        <span>Analyze</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13 5l7 7-7 7M5 5l7 7-7 7"
+          />
+        </svg>
+      </BrandButton>
     </div>
   </div>
 </template>
@@ -52,9 +98,12 @@
 import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Camera from "simple-vue-camera";
+import BrandButton from "../components/BrandButton.vue";
+
 export default {
   components: {
     Camera,
+    BrandButton,
   },
   setup() {
     const router = useRouter;
@@ -79,8 +128,14 @@ export default {
       reader.readAsDataURL(blob);
       reader.onloadend = function () {
         var base64data = reader.result;
+        const finalImage = base64data.replace("data:image/png;base64,", "");
         console.log(base64data);
+        console.log(finalImage);
       };
+    }
+
+    const retake = () => {
+        capturedImage.value = "";
     }
 
     return {
@@ -90,6 +145,7 @@ export default {
       snapshot,
       devices,
       capturedImage,
+      retake,
     };
   },
 };

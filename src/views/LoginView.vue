@@ -51,6 +51,7 @@
     <BrandButton
       class="mx-auto mt-12 flex flex-row fixed inset-x-0 bottom-20"
       type="dark"
+      text="xs"
     >
       or use your
       <img
