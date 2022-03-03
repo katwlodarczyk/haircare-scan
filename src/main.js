@@ -3,7 +3,6 @@ import App from "./App.vue";
 import router from "./router";
 import "./assets/index.css";
 
-
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -16,7 +15,7 @@ const firebaseConfig = {
   projectId: "haircare-scan",
   storageBucket: "haircare-scan.appspot.com",
   messagingSenderId: "868432268519",
-  appId: "1:868432268519:web:4eefa53d50549cadefa642"
+  appId: "1:868432268519:web:4eefa53d50549cadefa642",
 };
 
 // Initialize Firebase
@@ -27,3 +26,4 @@ const app = createApp(App);
 app.use(router);
 
 app.mount("#app");
+
