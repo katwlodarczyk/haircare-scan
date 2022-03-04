@@ -87,7 +87,7 @@ export default {
       favourite.value = true;
       toast.info("Added to favourites!", {
         position: "bottom-right",
-        timeout: "1000",
+        timeout: 1000,
         closeOnClick: true,
         pauseOnFocusLoss: true,
         pauseOnHover: true,
@@ -106,7 +106,7 @@ export default {
       favourite.value = false;
       toast.info("Removed from favourites", {
         position: "bottom-right",
-        timeout: "1000",
+        timeout: 1000,
         closeOnClick: true,
         pauseOnFocusLoss: true,
         pauseOnHover: true,

@@ -184,7 +184,7 @@ export default {
     const auth = getAuth();
 
     const saveEmailEdit = () => {
-      if (user.email !== newEmail.value) {
+      if (user.email !== newEmail.value && newEmail.value) {
         updateEmail(auth.currentUser, newEmail.value)
           .then(() => {
             toast.success("Email address has been changed", {
@@ -205,8 +205,21 @@ export default {
             newEmail.value = "";
           })
           .catch((error) => {
-            // @todo add toast
             console.log(error);
+            toast.error(error.message, {
+              position: "bottom-right",
+              timeout: 2000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: true,
+              rtl: false,
+            });
           });
       } else {
         openEmailEdit.value = false;
@@ -214,44 +227,48 @@ export default {
     };
 
     const savePasswordEdit = () => {
-      updatePassword(auth.currentUser, newPassword.value)
-        .then(() => {
-          toast.success("Password has been changed", {
-            position: "bottom-right",
-            timeout: 1000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.1,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: false,
-            icon: true,
-            rtl: false,
+      if (newPassword.value) {
+        updatePassword(auth.currentUser, newPassword.value)
+          .then(() => {
+            toast.success("Password has been changed", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: true,
+              rtl: false,
+            });
+          })
+          .then(() => {
+            openPasswordEdit.value = false;
+            newPassword.value = undefined;
+          })
+          .catch((error) => {
+            console.log(error);
+            toast.error(error.message, {
+              position: "bottom-right",
+              timeout: 2000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: true,
+              rtl: false,
+            });
           });
-        })
-        .then(() => {
-          openPasswordEdit.value = false;
-          newPassword.value = "";
-        })
-        .catch((error) => {
-          console.log(error);
-          toast.error(error.message, {
-            position: "bottom-right",
-            timeout: 2000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.1,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: false,
-            icon: true,
-            rtl: false,
-          });
-        });
+      } else {
+        openPasswordEdit.value = false;
+      }
     };
 
     const signOut = async () => {
