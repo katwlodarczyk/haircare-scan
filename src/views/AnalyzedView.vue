@@ -72,7 +72,7 @@ import { useToast } from "vue-toastification";
 
 export default {
   setup() {
-      const toast = useToast();
+    const toast = useToast();
     const productName = ref();
     const openEditProductName = ref(false);
     const favourite = ref(false);
@@ -85,25 +85,39 @@ export default {
     const addToFavourite = () => {
       console.log("Added to favourite");
       favourite.value = true;
-      toast.success("My toast content", {
+      toast.info("Added to favourites!", {
         position: "bottom-right",
-        timeout: 3728,
+        timeout: "1000",
         closeOnClick: true,
         pauseOnFocusLoss: true,
         pauseOnHover: true,
         draggable: true,
         draggablePercent: 0.1,
         showCloseButtonOnHover: false,
-        hideProgressBar: false,
-        closeButton: "button",
+        hideProgressBar: true,
+        closeButton: false,
         icon: false,
         rtl: false,
-        });
+      });
     };
 
     const removeFromFavourite = () => {
       console.log("removed from fav");
       favourite.value = false;
+      toast.info("Removed from favourites", {
+        position: "bottom-right",
+        timeout: "1000",
+        closeOnClick: true,
+        pauseOnFocusLoss: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.1,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: false,
+        icon: false,
+        rtl: false,
+      });
     };
 
     return {

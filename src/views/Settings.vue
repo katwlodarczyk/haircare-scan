@@ -166,6 +166,7 @@ import BrandButton from "../components/BrandButton.vue";
 import useAuth from "../services/useAuth";
 import { useRouter } from "vue-router";
 import { getAuth, updateEmail, updatePassword } from "firebase/auth";
+import { useToast } from "vue-toastification";
 
 export default {
   components: {
@@ -173,6 +174,7 @@ export default {
     BrandButton,
   },
   setup() {
+    const toast = useToast();
     const router = useRouter();
     const { user, signUserOut } = useAuth();
     const openEmailEdit = ref(false);
@@ -185,6 +187,20 @@ export default {
       if (user.email !== newEmail.value) {
         updateEmail(auth.currentUser, newEmail.value)
           .then(() => {
+            toast.success("Email address has been changed", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: true,
+              rtl: false,
+            });
             openEmailEdit.value = false;
             newEmail.value = "";
           })
@@ -200,12 +216,41 @@ export default {
     const savePasswordEdit = () => {
       updatePassword(auth.currentUser, newPassword.value)
         .then(() => {
-          console.log("it works");
+          toast.success("Password has been changed", {
+            position: "bottom-right",
+            timeout: 1000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.1,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: false,
+            icon: true,
+            rtl: false,
+          });
+        })
+        .then(() => {
           openPasswordEdit.value = false;
           newPassword.value = "";
         })
         .catch((error) => {
           console.log(error);
+          toast.error(error.message, {
+            position: "bottom-right",
+            timeout: 2000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.1,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: false,
+            icon: true,
+            rtl: false,
+          });
         });
     };
 

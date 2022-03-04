@@ -5,3 +5,67 @@
 body {
     background-color: #FDFDFD;
 }
+
+/* animation for toast */
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  .fade-enter-active {
+    animation-name: fadeIn;
+    animation-duration: 750ms;
+    animation-fill-mode: both;
+  }
+  .fade-leave-active {
+    animation-name: fadeOut;
+    animation-duration: 750ms;
+    animation-fill-mode: both;
+  }
+  .fade-move {
+    transition-timing-function: ease-in-out;
+    transition-property: all;
+    transition-duration: 400ms;
+  }
+
+  /* toast styling */
+  .Vue-Toastification__toast {
+      min-width: max-content !important;
+      border-radius: 8px !important;
+  }
+
+  .Vue-Toastification__toast.Vue-Toastification__toast--success, 
+  .Vue-Toastification__toast.Vue-Toastification__toast--error, 
+  .Vue-Toastification__toast.Vue-Toastification__toast--warning,
+  .Vue-Toastification__toast.Vue-Toastification__toast--default,
+  .Vue-Toastification__toast.Vue-Toastification__toast--info {
+      width: max-content !important;
+      max-width: 50% !important;
+      flex-shrink: 1;
+      margin-bottom: 130px;
+      margin-right: 16px;
+      display: flex;
+      align-self: flex-end;
+      box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  .Vue-Toastification__toast.Vue-Toastification__toast--default,
+  .Vue-Toastification__toast.Vue-Toastification__toast--info {
+    background-color: #F2AEE7;
+  }
+
+  .Vue-Toastification__toast .Vue-Toastification__toast-body{
+      font-size: 12px;
+      white-space: normal;
+
+  }

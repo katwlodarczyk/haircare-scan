@@ -2,14 +2,14 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import "./assets/index.css";
-import Toast from "vue-toastification";
+import Toast, { POSITION }  from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
 const options = {
   // You can set your default options here
-  transition: "my-custom-fade",
-  position: "bottom-right",
-  hideProgressBar: false,
+  transition: "fade",
+  position: POSITION.BOTTOM_RIGHT,
+  // hideProgressBar: true,
 };
 
 // Import the functions you need from the SDKs you need
