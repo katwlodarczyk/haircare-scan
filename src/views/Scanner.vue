@@ -70,6 +70,7 @@
         />
       </svg>
       <BrandButton
+        @click="analyze"
         v-show="capturedImage"
         type="dark"
         class="flex justify-between items-center space-x-2"
@@ -106,8 +107,8 @@ export default {
     BrandButton,
   },
   setup() {
-    const router = useRouter;
-    const route = useRoute;
+    const router = useRouter();
+    const route = useRoute();
     // Get a reference of the component
     const camera = ref();
     const capturedImage = ref();
@@ -129,14 +130,19 @@ export default {
       reader.onloadend = function () {
         var base64data = reader.result;
         const finalImage = base64data.replace("data:image/png;base64,", "");
-        console.log(base64data);
-        console.log(finalImage);
+        // console.log(base64data);
+        // console.log(finalImage);
       };
     }
 
     const retake = () => {
-        capturedImage.value = "";
-    }
+      capturedImage.value = "";
+    };
+
+    const analyze = () => {
+      let id = 1;
+      router.push({ name: "analyzed", params: { id } });
+    };
 
     return {
       router,
@@ -146,6 +152,7 @@ export default {
       devices,
       capturedImage,
       retake,
+      analyze,
     };
   },
 };

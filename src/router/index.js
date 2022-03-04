@@ -9,6 +9,7 @@ import Settings from "../views/Settings.vue";
 import PageNotFound from "../views/404.vue";
 import ArticleView from "../views/ArticleView.vue";
 import Scanner from "../views/Scanner.vue";
+import AnalyzedView from "../views/AnalyzedView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,6 +64,14 @@ const router = createRouter({
       path: "/scanner",
       name: "scanner",
       component: Scanner,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/analyzed/:id",
+      name: "analyzed",
+      component: AnalyzedView,
       meta: {
         requiresAuth: true,
       },

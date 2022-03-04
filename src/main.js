@@ -2,6 +2,15 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import "./assets/index.css";
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+const options = {
+  // You can set your default options here
+  transition: "my-custom-fade",
+  position: "bottom-right",
+  hideProgressBar: false,
+};
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -24,5 +33,6 @@ initializeApp(firebaseConfig);
 const app = createApp(App);
 
 app.use(router);
+app.use(Toast, options);
 
 app.mount("#app");
