@@ -70,7 +70,7 @@
         />
       </svg>
       <BrandButton
-        @click="analyze"
+        @click="analyze(capturedImage)"
         v-show="capturedImage"
         type="dark"
         class="flex justify-between items-center space-x-2"
@@ -139,9 +139,12 @@ export default {
       capturedImage.value = "";
     };
 
-    const analyze = () => {
+    const analyze = (capturedImage) => {
       let id = 1;
-      router.push({ name: "analyzed", params: { id } });
+      router.push({
+        name: "analyzed",
+        params: { id, scan: capturedImage },
+      });
     };
 
     return {

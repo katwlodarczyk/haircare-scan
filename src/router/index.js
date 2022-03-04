@@ -72,6 +72,7 @@ const router = createRouter({
       path: "/analyzed/:id",
       name: "analyzed",
       component: AnalyzedView,
+      props: true,
       meta: {
         requiresAuth: true,
       },
