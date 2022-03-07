@@ -20,23 +20,21 @@
       </svg>
       <span>Go back</span>
     </div>
-
-    <div class="mx-auto">
-      <img class="mx-auto" :src="articleImage" />
+    <!-- @todo add skeleton loading -->
+    <div v-if="articleData" class="mx-auto">
+      <img class="mx-auto w-1/2" :src="articleData.image" />
       <div>
-        <h1 class="my-6 font-medium text-xl mx-auto">{{ title }}</h1>
-        <p class="text-left">
-          Lorem duis voluptate ad proident duis sunt culpa anim mollit sint sit.
-          Exercitation sit amet adipisicing aliqua sint. Cillum proident sit
-          elit sit eiusmod eu officia adipisicing ex sint est officia sit est.
-          Laboris ex commodo fugiat minim occaecat qui excepteur officia in
-          dolor fugiat. Quis do ullamco pariatur esse dolore labore do aliquip
-          minim voluptate consectetur exercitation in aute. Amet amet ex
-          adipisicing fugiat et. Nisi duis culpa Lorem labore cillum est
-          consectetur officia deserunt laborum dolor consectetur nostrud duis.
-          Enim aliqua velit consectetur ullamco amet eu. Voluptate aute ipsum
-          laborum eu labore sunt minim sit exercitation.
-        </p>
+        <h1 class="mb-6 font-medium text-xl mx-auto">
+          {{ articleData.title }}
+        </h1>
+        <Markdown
+          class="text-left"
+          breaks
+          html
+          typographer
+          linkify
+          :source="articleData.body"
+        />
       </div>
     </div>
 
@@ -64,22 +62,40 @@
 </template>
 
 <script>
+import Markdown from "vue3-markdown-it";
 import { useRouter, useRoute } from "vue-router";
+import { onMounted, ref } from "vue";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import "highlight.js/styles/monokai.css";
+
 export default {
-  props: {
-    articleImage: {
-      type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
+  components: {
+    Markdown,
   },
-  setup() {
+  setup(params, context) {
     const router = useRouter;
     const route = useRoute;
-    return { router, route };
+    const articleData = ref();
+    const db = getFirestore();
+    const getArticleData = async () => {
+      const docRef = doc(db, "articles", context.attrs.articleId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        articleData.value = docSnap.data();
+        // setLoading(false);
+      } else {
+        console.log("No article!");
+        // setLoading(false);
+      }
+    };
+
+    const source = "# HElloWorld \n ## This is h2";
+
+    onMounted(() => {
+      getArticleData();
+    });
+
+    return { router, route, articleData, source };
   },
 };
 </script>

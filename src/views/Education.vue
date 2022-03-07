@@ -10,38 +10,58 @@
       <p>As they say- knowledge is power!</p>
     </div>
     <div
+      v-if="articlesData"
       class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"
     >
       <article-card
+        v-for="article in articlesData"
+        :key="article.id"
+        :title="article.title"
+        :articleImage="article.image"
         @click="
           $router.push({
             name: 'article',
             params: {
-              articleId: '2',
-              articleImage: '/src/assets/images/lady-back.svg',
-              title: 'How to choose a shampoo?',
+              articleId: article.id,
             },
           })
         "
-        articleImage="/src/assets/images/lady-back.svg"
       ></article-card>
-      <article-card
-        articleImage="/src/assets/images/lady-back.svg"
-      ></article-card>
-      <article-card
-        articleImage="/src/assets/images/lady-back.svg"
-      ></article-card>
-      <article-card
-        articleImage="/src/assets/images/lady-back.svg"
-      ></article-card>
+    </div>
+    <div v-else class="my-16">
+      <h2 class="text-lg pb-1.5">No articles yet.</h2>
+      <p class="text-sm">Come back later!</p>
     </div>
   </div>
 </template>
 
 <script>
 import ArticleCard from "../components/ArticleCard.vue";
+import { ref, onMounted } from "vue";
+import useArticles from "../services/useArticles.js";
+
 export default {
   components: { ArticleCard },
-  setup() {},
+  setup() {
+    const articlesData = ref();
+    const { getArticles } = useArticles();
+
+    const getArticlesData = async () => {
+      const articlesSnap = await getArticles();
+      let articles = [];
+      if (articlesSnap.size) {
+        articlesSnap.forEach((doc) => {
+          articles.push({ ...doc.data(), ...{ id: doc.id } });
+        });
+        articlesData.value = articles;
+      }
+    };
+
+    onMounted(() => {
+      getArticlesData();
+    });
+
+    return { getArticlesData, articlesData };
+  },
 };
 </script>
