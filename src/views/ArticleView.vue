@@ -28,12 +28,11 @@
           {{ articleData.title }}
         </h1>
         <Markdown
-          class="text-left"
           breaks
-          html
-          typographer
           linkify
-          :source="articleData.body"
+          typographer
+          class="text-left"
+          :source="source"
         />
       </div>
     </div>
@@ -77,19 +76,19 @@ export default {
     const route = useRoute;
     const articleData = ref();
     const db = getFirestore();
+    const source = ref();
     const getArticleData = async () => {
       const docRef = doc(db, "articles", context.attrs.articleId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         articleData.value = docSnap.data();
+        source.value = articleData.value.body.replaceAll("\\n", "\n");
         // setLoading(false);
       } else {
         console.log("No article!");
         // setLoading(false);
       }
     };
-
-    const source = "# HElloWorld \n ## This is h2";
 
     onMounted(() => {
       getArticleData();
