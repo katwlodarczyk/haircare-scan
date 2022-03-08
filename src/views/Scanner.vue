@@ -100,6 +100,7 @@ import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Camera from "simple-vue-camera";
 import BrandButton from "../components/BrandButton.vue";
+import { createWorker, PSM, OEM } from "tesseract.js";
 
 export default {
   components: {
@@ -141,10 +142,28 @@ export default {
 
     const analyze = (capturedImage) => {
       let id = 1;
-      router.push({
-        name: "analyzed",
-        params: { id, scan: capturedImage },
+      recognize(capturedImage);
+      // router.push({
+      //   name: "analyzed",
+      //   params: { id, scan: capturedImage },
+      // });
+    };
+
+    const worker = createWorker({
+      logger: (m) => console.log(m),
+    });
+
+    const recognize = async (capturedImage) => {
+      await worker.load();
+      await worker.loadLanguage("eng");
+      await worker.initialize("eng", OEM.LSTM_ONLY);
+      await worker.setParameters({
+        tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
       });
+      const {
+        data: { text },
+      } = await worker.recognize(capturedImage);
+      console.log(text);
     };
 
     return {
