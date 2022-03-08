@@ -4,9 +4,9 @@
       v-show="loading === true"
       class="w-screen h-screen absolute z-20 text-white"
     >
-      <div class="absolute z-10 w-screen h-screen bg-gray-700 opacity-70"></div>
+      <div class="absolute z-10 w-screen h-screen bg-gray-700 opacity-75"></div>
       <div
-        class="absolute inset-y-0 mx-auto w-screen flex flex-col justify-center items-center space-y-2 z-30"
+        class="absolute inset-y-0 mx-auto w-screen flex flex-col justify-center items-center space-y-4 z-30"
       >
         <svg
           width="38"
@@ -31,17 +31,17 @@
             </g>
           </g>
         </svg>
-        <h1>Recognizing indredients...</h1>
+        <h1>{{ words[i] }}</h1>
       </div>
     </div>
     <div
       class="bg-gray-800 w-screen h-screen flex flex-col justify-between py-6"
     >
-      <div class="relative w-full py-4">
+      <div class="relative w-full py-8">
         <svg
           @click="$router.back()"
           xmlns="http://www.w3.org/2000/svg"
-          class="absolute top-2 right-4 text-white h-6 w-6"
+          class="absolute top-4 right-4 text-white h-6 w-6"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -152,6 +152,12 @@ export default {
     const camera = ref();
     const capturedImage = ref();
     const loading = ref(false);
+    const words = [
+      "Recognizing ingredients...",
+      "Analyzing the types...",
+      "Preparing the view...",
+    ];
+    let i = ref(0);
 
     const devices = camera.value?.devices(["videoinput"]);
     // Use camera reference to call functions
@@ -171,8 +177,6 @@ export default {
       reader.onloadend = function () {
         var base64data = reader.result;
         const finalImage = base64data.replace("data:image/png;base64,", "");
-        // console.log(base64data);
-        // console.log(finalImage);
       };
     }
 
@@ -181,18 +185,22 @@ export default {
     };
 
     const worker = createWorker({
-      logger: (m) => console.log(m),
+      // logger: (m) => console.log(m),
     });
 
     const analyze = async (capturedImage) => {
       loading.value = true;
+      setInterval(() => {
+        if (i.value < words.length - 1) i.value++;
+        else i.value = 0;
+      }, 6000);
+
       await worker.load();
       await worker.loadLanguage("eng");
       await worker.initialize("eng", OEM.LSTM_ONLY);
       await worker.setParameters({
         tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
       });
-      console.log("worker", worker);
       const {
         data: { text },
       } = await worker.recognize(capturedImage);
@@ -200,7 +208,7 @@ export default {
       loading.value = false;
       router.push({
         name: "analyzed",
-        params: { id: 1, scan: capturedImage },
+        params: { id: worker.id, scan: capturedImage },
       });
     };
 
@@ -214,6 +222,8 @@ export default {
       retake,
       analyze,
       loading,
+      words,
+      i,
     };
   },
 };
