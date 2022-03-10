@@ -10,7 +10,24 @@
       <p>As they say- knowledge is power!</p>
     </div>
     <div
-      v-if="articlesData"
+      v-if="loading && !articleData"
+      class="animate-pulse grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"
+    >
+      <div
+        class="rounded-lg bg-brand-purple opacity-10 h-36 w-36 shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple opacity-10 h-36 w-36 shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple opacity-10 h-36 w-36 shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple opacity-10 h-36 w-36 shadow-sm shadow-brand-purple/10"
+      ></div>
+    </div>
+    <div
+      v-else-if="!loading && articlesData"
       class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"
     >
       <article-card
@@ -28,7 +45,7 @@
         "
       ></article-card>
     </div>
-    <div v-else class="my-16">
+    <div v-else-if="!loading && !articleData" class="my-16">
       <h2 class="text-lg pb-1.5">No articles yet.</h2>
       <p class="text-sm">Come back later!</p>
     </div>
@@ -45,8 +62,10 @@ export default {
   setup() {
     const articlesData = ref();
     const { getArticles } = useArticles();
+    const loading = ref(false);
 
     const getArticlesData = async () => {
+      loading.value = true;
       const articlesSnap = await getArticles();
       let articles = [];
       if (articlesSnap.size) {
@@ -55,13 +74,14 @@ export default {
         });
         articlesData.value = articles;
       }
+      loading.value = false;
     };
 
     onMounted(() => {
       getArticlesData();
     });
 
-    return { getArticlesData, articlesData };
+    return { getArticlesData, articlesData, loading };
   },
 };
 </script>
