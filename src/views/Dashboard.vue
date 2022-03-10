@@ -1,20 +1,36 @@
 <template>
   <EmptyState
-    v-if="false"
+    v-if="!loading && !scansData"
     topText="You haven't scanned anything yet."
     bottomText="Use the scanner."
   />
-  <div v-else>
+  <div v-else-if="!loading && scansData">
     <ViewHeader heading="Your previous scans" icon="time" />
-    <div>
-      <ScanListItem
-        v-for="scan in scansData"
-        :key="scan.id"
-        :title="scan.productName ? scan.productName : scan.date"
-        :id="scan.id"
-        @remove-scan="removeScan(scan.id)"
-      />
-    </div>
+    <ScanListItem
+      v-for="scan in scansData"
+      :key="scan.id"
+      :title="scan.productName ? scan.productName : scan.date"
+      :id="scan.id"
+      @remove-scan="removeScan(scan.id)"
+    />
+  </div>
+  <div v-else-if="loading && !scansData" class="w-full h-full flex flex-col">
+    <ViewHeader heading="Your previous scans" icon="time" />
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
   </div>
 </template>
 
@@ -49,6 +65,7 @@ export default {
     });
 
     const getScansData = async () => {
+      loading.value = true;
       let scans = [];
       const docSnap = await getDocs(scansRef);
       if (docSnap.size) {
@@ -57,6 +74,7 @@ export default {
         });
         scansData.value = scans;
       }
+      loading.value = false;
     };
 
     const removeScan = async (id) => {
@@ -88,7 +106,7 @@ export default {
         });
     };
 
-    return { scansData, removeScan };
+    return { scansData, removeScan, loading };
   },
 };
 </script>

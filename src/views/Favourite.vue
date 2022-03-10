@@ -1,10 +1,10 @@
 <template>
   <EmptyState
-    v-if="false"
+    v-if="!loading && !favData"
     withArrow="false"
     topText="You don't have any favourite scans yet."
   />
-  <div v-else>
+  <div v-else-if="!loading && favData">
     <ViewHeader heading="Your favourite scans" icon="heart" />
     <ScanListItem
       v-for="fav in favData"
@@ -13,6 +13,24 @@
       :id="fav.id"
       :withRemove="false"
     />
+  </div>
+  <div v-else-if="loading && !favData" class="w-full h-full flex flex-col">
+    <ViewHeader heading="Your favourite scans" icon="heart" />
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
   </div>
 </template>
 
@@ -41,12 +59,14 @@ export default {
     const scansRef = collection(db, `scans-${userUID}`);
     const q = query(scansRef, where("favourite", "==", true));
     const favData = ref();
+    const loading = ref(false);
 
     onMounted(() => {
       getFavouritesData();
     });
 
     const getFavouritesData = async () => {
+      loading.value = true;
       let favs = [];
       const querySnapshot = await getDocs(q);
       if (querySnapshot.size) {
@@ -55,8 +75,9 @@ export default {
         });
         favData.value = favs;
       }
+      loading.value = false;
     };
-    return { favData };
+    return { favData, loading };
   },
 };
 </script>
