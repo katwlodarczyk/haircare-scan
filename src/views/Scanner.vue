@@ -31,7 +31,7 @@
             </g>
           </g>
         </svg>
-        <h1>{{ words[i] }}</h1>
+        <h1>{{ loadingSentences[i] }}</h1>
       </div>
     </div>
     <div
@@ -134,11 +134,18 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref as ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Camera from "simple-vue-camera";
 import BrandButton from "../components/BrandButton.vue";
 import { createWorker, PSM, OEM } from "tesseract.js";
+import { useToast } from "vue-toastification";
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
 
 export default {
   components: {
@@ -146,18 +153,28 @@ export default {
     BrandButton,
   },
   setup() {
+    const toast = useToast();
+    const userUID = localStorage.getItem("userUID");
+    const capturedImageName = ref("");
+    const storage = getStorage();
     const router = useRouter();
     const route = useRoute();
     // Get a reference of the component
     const camera = ref();
     const capturedImage = ref();
+    const base64CapturedImage = ref();
     const loading = ref(false);
-    const words = [
+    const loadingSentences = [
       "Recognizing ingredients...",
       "Analyzing the types...",
+      "Saving the scan...",
       "Preparing the view...",
     ];
     let i = ref(0);
+
+    const metadata = {
+      contentType: "image/png",
+    };
 
     const devices = camera.value?.devices(["videoinput"]);
     // Use camera reference to call functions
@@ -165,18 +182,23 @@ export default {
       const blob = await camera.value?.snapshot();
       // To show the screenshot with an image tag, create a url
       const url = URL.createObjectURL(blob);
-      console.log(blob);
-      console.log(url);
       blobToBase64(blob);
       capturedImage.value = url;
+      getNameFromUrl(url);
     };
+
+    function getNameFromUrl(url) {
+      const urlArray = url.split("/");
+      capturedImageName.value = urlArray.pop();
+    }
 
     function blobToBase64(blob) {
       var reader = new FileReader();
       reader.readAsDataURL(blob);
       reader.onloadend = function () {
         var base64data = reader.result;
-        const finalImage = base64data.replace("data:image/png;base64,", "");
+        // const finalImage = base64data.replace("data:image/png;base64,", "");
+        base64CapturedImage.value = base64data;
       };
     }
 
@@ -190,8 +212,9 @@ export default {
 
     const analyze = async (capturedImage) => {
       loading.value = true;
+
       setInterval(() => {
-        if (i.value < words.length - 1) i.value++;
+        if (i.value < loadingSentences.length - 1) i.value++;
         else i.value = 0;
       }, 6000);
 
@@ -205,10 +228,42 @@ export default {
         data: { text },
       } = await worker.recognize(capturedImage);
       console.log("text", text);
+
+      const scanStorage = storageRef(
+        storage,
+        `users-scans/${userUID}/${capturedImageName.value}.png`
+      );
+      await uploadBytes(scanStorage, capturedImage, metadata)
+        .then((snapshot) => {
+          console.log("Uploaded a blob or file!");
+          getDownloadURL(snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+          });
+        })
+        .catch((error) => {
+          loading.value = false;
+          toast.error(error.message, {
+            position: "bottom-right",
+            timeout: 2000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.1,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: false,
+            icon: true,
+            rtl: false,
+          });
+        });
       loading.value = false;
       router.push({
         name: "analyzed",
-        params: { id: worker.id, scan: capturedImage },
+        params: {
+          id: capturedImageName.value,
+          scan: base64CapturedImage.value,
+        },
       });
     };
 
@@ -222,7 +277,8 @@ export default {
       retake,
       analyze,
       loading,
-      words,
+      loadingSentences,
+      capturedImageName,
       i,
     };
   },

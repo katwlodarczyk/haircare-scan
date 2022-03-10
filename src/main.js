@@ -4,6 +4,9 @@ import router from "./router";
 import "./assets/index.css";
 import Toast, { POSITION }  from "vue-toastification";
 import "vue-toastification/dist/index.css";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
 
 const options = {
   // You can set your default options here
@@ -12,12 +15,7 @@ const options = {
   // hideProgressBar: true,
 };
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCPcd8kM5uyhZRmTZjmxdtg82rpF87N56c",
   authDomain: "haircare-scan.firebaseapp.com",
@@ -28,7 +26,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
+getStorage(firebaseApp);
 
 const app = createApp(App);
 
