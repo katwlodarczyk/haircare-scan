@@ -168,17 +168,27 @@ export default {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         scanData.value = docSnap.data();
-        scan.value = scanData.value.scanRef;
+        if (!scan.value) {
+          scan.value = scanData.value.scanRef;
+        }
         productName.value = scanData.value.productName;
         scanDate.value = scanData.value.date;
         loading.value = false;
       } else {
-        console.log("No scan found !");
-        // NotificationManager.error(
-        //   "Oops, recipe could not been found. Try again.",
-        //   "Error!",
-        //   2000
-        // );
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          timeout: 2000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.1,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: false,
+          icon: true,
+          rtl: false,
+        });
         loading.value = false;
       }
     };

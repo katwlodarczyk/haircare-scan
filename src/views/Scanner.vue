@@ -143,7 +143,7 @@ import { useToast } from "vue-toastification";
 import {
   getStorage,
   ref as storageRef,
-  uploadBytes,
+  uploadString,
   getDownloadURL,
 } from "firebase/storage";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
@@ -166,6 +166,7 @@ export default {
     const camera = ref();
     const capturedImage = ref();
     const base64CapturedImage = ref();
+    const base64Strip = ref();
     const loading = ref(false);
     const loadingSentences = [
       "Recognizing ingredients...",
@@ -200,7 +201,7 @@ export default {
       reader.readAsDataURL(blob);
       reader.onloadend = function () {
         var base64data = reader.result;
-        // const finalImage = base64data.replace("data:image/png;base64,", "");
+        base64Strip.value = base64data.replace("data:image/png;base64,", "");
         base64CapturedImage.value = base64data;
       };
     }
@@ -237,40 +238,83 @@ export default {
         `users-scans/${userUID}/${capturedImageName.value}.png`
       );
 
-      await uploadBytes(scanStorage, capturedImage, metadata)
-        .then((snapshot) => {
-          console.log("Uploaded a blob or file!");
-          getDownloadURL(snapshot.ref).then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            saveScan(capturedImageName.value, downloadURL, text);
-          });
-        })
-        .catch((error) => {
-          loading.value = false;
-          toast.error(error.message, {
-            position: "bottom-right",
-            timeout: 2000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.1,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: false,
-            icon: true,
-            rtl: false,
-          });
+      await uploadString(
+        scanStorage,
+        base64Strip.value,
+        "base64",
+        metadata
+      ).then((snapshot) => {
+        console.log("Uploaded a base64url string!");
+        getDownloadURL(snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          saveScan(capturedImageName.value, downloadURL, text);
         });
+      });
 
       loading.value = false;
-      router.push({
+      await router.push({
         name: "analyzed",
         params: {
           id: capturedImageName.value,
           scan: base64CapturedImage.value,
         },
       });
+
+      // const uploadTask = uploadBytesResumable(
+      //   scanStorage,
+      //   capturedImage,
+      //   metadata
+      // );
+
+      // uploadTask.on(
+      //   "state_changed",
+      //   (snapshot) => {
+      //     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+      //     const progress =
+      //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      //     console.log("Upload is " + progress + "% done");
+      //     switch (snapshot.state) {
+      //       case "paused":
+      //         console.log("Upload is paused");
+      //         break;
+      //       case "running":
+      //         console.log("Upload is running");
+      //         break;
+      //     }
+      //   },
+      //   (error) => {
+      //     loading.value = false;
+      //     toast.error(error.message, {
+      //       position: "bottom-right",
+      //       timeout: 2000,
+      //       closeOnClick: true,
+      //       pauseOnFocusLoss: true,
+      //       pauseOnHover: true,
+      //       draggable: true,
+      //       draggablePercent: 0.1,
+      //       showCloseButtonOnHover: false,
+      //       hideProgressBar: true,
+      //       closeButton: false,
+      //       icon: true,
+      //       rtl: false,
+      //     });
+      //   },
+      //   () => {
+      //     // Handle successful uploads on complete
+      //     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      //       console.log("File available at", downloadURL);
+      //       saveScan(capturedImageName.value, downloadURL, text);
+      //     });
+      //     loading.value = false;
+      //     router.push({
+      //       name: "analyzed",
+      //       params: {
+      //         id: capturedImageName.value,
+      //         scan: base64CapturedImage.value,
+      //       },
+      //     });
+      //   }
+      // );
     };
 
     const saveScan = async (capturedImageName, scanRef, text) => {
