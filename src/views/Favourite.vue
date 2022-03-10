@@ -51,8 +51,6 @@ export default {
       const querySnapshot = await getDocs(q);
       if (querySnapshot.size) {
         querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, " => ", doc.data());
           favs.push({ ...doc.data(), ...{ id: doc.id } });
         });
         favData.value = favs;
