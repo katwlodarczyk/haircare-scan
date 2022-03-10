@@ -173,6 +173,9 @@ export default {
         }
         productName.value = scanData.value.productName;
         scanDate.value = scanData.value.date;
+        if (scanData.value.favourite) {
+          favourite.value = scanData.value.favourite;
+        }
         loading.value = false;
       } else {
         toast.error("Something went wrong!", {
@@ -199,10 +202,11 @@ export default {
       openEditProductName.value = false;
     };
 
-    const addToFavourite = () => {
-      console.log("Added to favourite");
-      favourite.value = true;
-      toast.info("Added to favourites!", {
+    const addToFavourite = async () => {
+      const docRef = doc(db, `scans-${userUID}`, context.attrs.id);
+      await updateDoc(docRef, { favourite: true });
+      await (favourite.value = true);
+      await toast.info("Added to favourites!", {
         position: "bottom-right",
         timeout: 1000,
         closeOnClick: true,
@@ -218,10 +222,11 @@ export default {
       });
     };
 
-    const removeFromFavourite = () => {
-      console.log("removed from fav");
-      favourite.value = false;
-      toast.info("Removed from favourites", {
+    const removeFromFavourite = async () => {
+      const docRef = doc(db, `scans-${userUID}`, context.attrs.id);
+      await updateDoc(docRef, { favourite: false });
+      await (favourite.value = false);
+      await toast.info("Removed from favourites", {
         position: "bottom-right",
         timeout: 1000,
         closeOnClick: true,
