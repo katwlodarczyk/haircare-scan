@@ -146,6 +146,8 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import { DateTime } from "luxon";
 
 export default {
   components: {
@@ -153,6 +155,7 @@ export default {
     BrandButton,
   },
   setup() {
+    const db = getFirestore();
     const toast = useToast();
     const userUID = localStorage.getItem("userUID");
     const capturedImageName = ref("");
@@ -233,11 +236,13 @@ export default {
         storage,
         `users-scans/${userUID}/${capturedImageName.value}.png`
       );
+
       await uploadBytes(scanStorage, capturedImage, metadata)
         .then((snapshot) => {
           console.log("Uploaded a blob or file!");
           getDownloadURL(snapshot.ref).then((downloadURL) => {
             console.log("File available at", downloadURL);
+            saveScan(capturedImageName.value, downloadURL, text);
           });
         })
         .catch((error) => {
@@ -257,6 +262,7 @@ export default {
             rtl: false,
           });
         });
+
       loading.value = false;
       router.push({
         name: "analyzed",
@@ -265,6 +271,39 @@ export default {
           scan: base64CapturedImage.value,
         },
       });
+    };
+
+    const saveScan = async (capturedImageName, scanRef, text) => {
+      const add = {
+        ...{
+          date: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
+          id: capturedImageName,
+          scanRef: scanRef,
+          text: text,
+        },
+      };
+
+      const scanFile = doc(db, `scans-${userUID}`, `${capturedImageName}`);
+
+      try {
+        await setDoc(scanFile, add, { merge: true });
+      } catch (e) {
+        toast.error("Oops, something went wrong. Try again!", {
+          position: "bottom-right",
+          timeout: 2000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.1,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: false,
+          icon: true,
+          rtl: false,
+        });
+        console.log(e);
+      }
     };
 
     return {
