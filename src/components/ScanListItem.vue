@@ -6,17 +6,17 @@
       @click="
         $router.push({
           name: 'analyzed',
-          params: { id: 1, scan: capturedImage },
+          params: { id: id },
         })
       "
-      class="flex flex-row space-x-4"
+      class="truncate flex flex-row space-x-4"
     >
       <img v-if="withPhoto" src="" alt="" />
       <img v-else src="../assets/icons/eye.svg" alt="eye icon" />
 
-      <h2 class="truncate">{{ title }}</h2>
+      <h2 class="truncate min-w-56 text-left">{{ title }}</h2>
     </div>
-    <div class="relative">
+    <div v-if="withMenu" class="relative">
       <svg
         @click="displayMenu = !displayMenu"
         xmlns="http://www.w3.org/2000/svg"
@@ -73,6 +73,15 @@ export default {
     withPhoto: {
       type: Boolean,
       required: false,
+    },
+    id: {
+      type: String,
+      required: true,
+    },
+    withMenu: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   setup() {

@@ -6,10 +6,13 @@
   />
   <div v-else>
     <ViewHeader heading="Your favourite scans" icon="heart" />
-    <div>
-      <ScanListItem title="Garnier Ultimate Blends Argan Richness" />
-      <ScanListItem title="Garnier Ultimate Blends Argan Richness" />
-    </div>
+    <ScanListItem
+      v-for="fav in favData"
+      :key="fav.id"
+      :title="fav.productName ? fav.productName : fav.date"
+      :id="fav.id"
+      :withMenu="false"
+    />
   </div>
 </template>
 
@@ -17,6 +20,14 @@
 import EmptyState from "../components/EmptyState.vue";
 import ViewHeader from "../components/ViewHeader.vue";
 import ScanListItem from "../components/ScanListItem.vue";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getFirestore,
+} from "firebase/firestore";
+import { onMounted, ref } from "@vue/runtime-core";
 
 export default {
   components: {
@@ -24,6 +35,30 @@ export default {
     ViewHeader,
     ScanListItem,
   },
-  setup() {},
+  setup() {
+    const db = getFirestore();
+    const userUID = localStorage.getItem("userUID");
+    const scansRef = collection(db, `scans-${userUID}`);
+    const q = query(scansRef, where("favourite", "==", true));
+    const favData = ref();
+
+    onMounted(() => {
+      getFavouritesData();
+    });
+
+    const getFavouritesData = async () => {
+      let favs = [];
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.size) {
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data());
+          favs.push({ ...doc.data(), ...{ id: doc.id } });
+        });
+        favData.value = favs;
+      }
+    };
+    return { favData };
+  },
 };
 </script>
