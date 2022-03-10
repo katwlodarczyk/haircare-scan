@@ -11,7 +11,7 @@
       :key="fav.id"
       :title="fav.productName ? fav.productName : fav.date"
       :id="fav.id"
-      :withMenu="false"
+      :withRemove="false"
     />
   </div>
 </template>

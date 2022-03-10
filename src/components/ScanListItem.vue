@@ -17,6 +17,7 @@
       <h2 class="truncate min-w-56 text-left">{{ title }}</h2>
     </div>
     <img
+      v-show="withRemove"
       @click="$emit('removeScan')"
       class="flex-shrink-0 w-5 h-5"
       src="../assets/icons/delete.svg"
@@ -41,6 +42,11 @@ export default {
     id: {
       type: String,
       required: true,
+    },
+    withRemove: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   setup() {
