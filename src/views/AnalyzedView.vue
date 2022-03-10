@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col px-6 text-left">
-    <div class="flex flex-row justify-between items-center">
-      <div class="flex flex-row space-x-2.5 items-center text-lg h-10">
+    <div class="flex flex-row justify-between space-x-2 w-full items-center">
+      <div class="truncate flex flex-row space-x-2.5 items-center text-lg h-10">
         <div
           @click="openEditProductName = true"
           v-if="openEditProductName === true"
@@ -14,12 +14,14 @@
             class="rounded-lg bg-brand-pale px-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
           />
         </div>
-        <span v-else>{{ productName ? productName : "Add product name" }}</span>
+        <span class="truncate" v-else>{{
+          productName ? productName : "Add product name"
+        }}</span>
         <svg
           @click="openEditProductName = true"
           v-if="openEditProductName === false"
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-gray-600"
+          class="h-5 w-5 text-gray-600 flex-shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -32,10 +34,10 @@
           />
         </svg>
         <svg
-          @click="openEditProductName = false"
+          @click="saveProductName"
           v-else
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 m-2 text-brand-pink"
+          class="h-6 w-6 m-2 text-brand-pink flex-shrink-0"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -61,7 +63,7 @@
         alt="favourite-icon"
       />
     </div>
-    <div class="text-xs pb-6">Scanned 05/03/2022 | 09:31am</div>
+    <div class="text-xs pb-6">Scanned {{ scanDate }}</div>
 
     <div class="w-full grid grid-cols-2 gap-4">
       <img :src="scan" alt="captured" class="rounded-xl shadow-md" />
@@ -139,20 +141,51 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useToast } from "vue-toastification";
+import { doc, updateDoc, getDoc, getFirestore } from "firebase/firestore";
 
 export default {
   setup(props, context) {
+    const db = getFirestore();
+    const userUID = localStorage.getItem("userUID");
     const toast = useToast();
+    const scanData = ref();
     const productName = ref();
-    const scan = context.attrs.scan;
+    const scan = ref(context.attrs.scan);
     const productPhoto = ref();
     const openEditProductName = ref(false);
+    const scanDate = ref();
     const favourite = ref(false);
+    const loading = ref(true);
 
-    const saveProductName = () => {
-      console.log("it works");
+    onMounted(() => {
+      getScanData();
+    });
+
+    const getScanData = async () => {
+      const docRef = doc(db, `scans-${userUID}`, context.attrs.id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        scanData.value = docSnap.data();
+        scan.value = scanData.value.scanRef;
+        productName.value = scanData.value.productName;
+        scanDate.value = scanData.value.date;
+        loading.value = false;
+      } else {
+        console.log("No scan found !");
+        // NotificationManager.error(
+        //   "Oops, recipe could not been found. Try again.",
+        //   "Error!",
+        //   2000
+        // );
+        loading.value = false;
+      }
+    };
+
+    const saveProductName = async () => {
+      const docRef = doc(db, `scans-${userUID}`, context.attrs.id);
+      await updateDoc(docRef, { productName: productName.value });
       openEditProductName.value = false;
     };
 
@@ -209,6 +242,10 @@ export default {
       addProductPhoto,
       productPhoto,
       scan,
+      getScanData,
+      scanData,
+      scanDate,
+      loading,
     };
   },
 };
