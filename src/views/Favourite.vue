@@ -12,6 +12,7 @@
       :title="fav.productName ? fav.productName : fav.date"
       :id="fav.id"
       :withRemove="false"
+      :productPhoto="fav.productPhotoRef ? fav.productPhotoRef : ''"
     />
   </div>
   <div v-else-if="loading && !favData" class="w-full h-full flex flex-col">

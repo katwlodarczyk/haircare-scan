@@ -1,6 +1,7 @@
 <template>
   <div
-    class="flex flex-row justify-between odd:bg-brand-pale even:bg-brand-nude px-6 py-5 space-x-4"
+    class="flex flex-row justify-between items-center odd:bg-brand-pale even:bg-brand-nude space-x-4"
+    :class="productPhoto ? 'py-2 pr-6 pl-4' : 'py-5 px-6'"
   >
     <div
       @click="
@@ -9,9 +10,15 @@
           params: { id: id },
         })
       "
-      class="truncate flex flex-row space-x-4"
+      class="truncate flex flex-row items-center space-x-5"
+      :class="productPhoto ? 'space-x-3' : 'space-x-6'"
     >
-      <img v-if="withPhoto" src="" alt="" />
+      <img
+        v-if="productPhoto"
+        :src="productPhoto"
+        alt="product photo"
+        class="h-16"
+      />
       <img v-else src="../assets/icons/eye.svg" alt="eye icon" />
 
       <h2 class="truncate min-w-56 text-left">{{ title }}</h2>
@@ -35,10 +42,6 @@ export default {
       type: String,
       required: true,
     },
-    withPhoto: {
-      type: Boolean,
-      required: false,
-    },
     id: {
       type: String,
       required: true,
@@ -47,6 +50,10 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    productPhoto: {
+      type: String,
+      required: false,
     },
   },
   setup() {

@@ -11,6 +11,7 @@
       :key="scan.id"
       :title="scan.productName ? scan.productName : scan.date"
       :id="scan.id"
+      :productPhoto="scan.productPhotoRef ? scan.productPhotoRef : ''"
       @remove-scan="removeScan(scan.id)"
     />
   </div>
