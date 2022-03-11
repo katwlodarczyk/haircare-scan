@@ -10,6 +10,7 @@ import PageNotFound from "../views/404.vue";
 import ArticleView from "../views/ArticleView.vue";
 import Scanner from "../views/Scanner.vue";
 import AnalyzedView from "../views/AnalyzedView.vue";
+import Camera from "../views/Camera.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -72,6 +73,15 @@ const router = createRouter({
       path: "/analyzed/:id",
       name: "analyzed",
       component: AnalyzedView,
+      props: true,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/camera",
+      name: "camera",
+      component: Camera,
       props: true,
       meta: {
         requiresAuth: true,

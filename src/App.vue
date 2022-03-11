@@ -3,20 +3,24 @@
     <Banner
       v-show="
         isAuthenticated &&
-        !['login', 'welcome', 'register', 'scanner'].includes($route.name)
+        !['login', 'welcome', 'register', 'scanner', 'camera'].includes(
+          $route.name
+        )
       "
     />
 
     <RouterView
       v-slot="{ Component }"
       class="flex flex-col"
-      :class="
-        [isAuthenticated &&
-        !['login', 'welcome', 'register', 'scanner'].includes($route.name)
+      :class="[
+        isAuthenticated &&
+        !['login', 'welcome', 'register', 'scanner', 'camera'].includes(
+          $route.name
+        )
           ? 'py-36 justify-center'
           : 'py-10',
         ['analyzed'].includes($route.name) ? '' : 'text-center',
-     ]"
+      ]"
     >
       <transition name="fade" mode="out-in">
         <component :is="Component" :key="$route.path"></component>
@@ -25,7 +29,9 @@
     <TabBar
       v-if="
         isAuthenticated &&
-        !['login', 'welcome', 'register', 'scanner'].includes($route.name)
+        !['login', 'welcome', 'register', 'scanner', 'camera'].includes(
+          $route.name
+        )
       "
     />
   </div>

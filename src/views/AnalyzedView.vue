@@ -78,13 +78,19 @@
 
     <div
       v-if="loading && !scanData"
-      class="w-full grid grid-cols-2 gap-4 animate-pulse h-60">
+      class="w-full grid grid-cols-2 gap-4 animate-pulse h-60"
+    >
       <div class="rounded-xl shadow-md bg-brand-purple opacity-10" />
       <div class="rounded-xl shadow-md bg-brand-purple opacity-10" />
     </div>
     <div v-else class="w-full grid grid-cols-2 gap-4">
       <img :src="scan" alt="captured" class="rounded-xl shadow-md" />
-      <img v-if="productPhoto" :src="productPhoto" alt="product-photo" />
+      <img
+        v-if="productPhoto"
+        :src="productPhoto"
+        alt="product-photo"
+        class="rounded-xl shadow-md"
+      />
       <div
         v-else
         @click="addProductPhoto"
@@ -176,9 +182,11 @@
 import { onMounted, ref } from "vue";
 import { useToast } from "vue-toastification";
 import { doc, updateDoc, getDoc, getFirestore } from "firebase/firestore";
+import { useRouter } from "vue-router";
 
 export default {
   setup(props, context) {
+    const router = useRouter();
     const db = getFirestore();
     const userUID = localStorage.getItem("userUID");
     const toast = useToast();
@@ -204,6 +212,7 @@ export default {
         if (!scan.value) {
           scan.value = scanData.value.scanRef;
         }
+        productPhoto.value = scanData.value.productPhotoRef;
         productName.value = scanData.value.productName;
         scanDate.value = scanData.value.date;
         if (scanData.value.favourite) {
@@ -276,7 +285,13 @@ export default {
     };
 
     const addProductPhoto = () => {
-      console.log("add product photo");
+      console.log("scanData Id", scanData.value.id);
+      router.push({
+        name: "camera",
+        params: {
+          scanId: scanData.value.id,
+        },
+      });
     };
 
     return {
