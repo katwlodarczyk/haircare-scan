@@ -1,7 +1,14 @@
 <template>
   <div class="w-full flex flex-col px-6 text-left">
     <div class="flex flex-row justify-between space-x-2 w-full items-center">
-      <div class="truncate flex flex-row space-x-2.5 items-center text-lg h-10">
+      <div
+        v-if="loading && !scanData"
+        class="w-56 animate-pulse h-8 my-2 bg-brand-purple opacity-10 rounded-lg"
+      />
+      <div
+        v-else
+        class="truncate flex flex-row space-x-2.5 items-center text-lg h-10"
+      >
         <div
           @click="openEditProductName = true"
           v-if="openEditProductName === true"
@@ -63,9 +70,19 @@
         alt="favourite-icon"
       />
     </div>
-    <div class="text-xs pb-6">Scanned {{ scanDate }}</div>
+    <div
+      v-if="loading && !scanData"
+      class="w-40 animate-pulse h-3 mb-2 bg-brand-purple opacity-10 rounded-md"
+    />
+    <div v-else class="text-xs pb-6">Scanned {{ scanDate }}</div>
 
-    <div class="w-full grid grid-cols-2 gap-4">
+    <div
+      v-if="loading && !scanData"
+      class="w-full grid grid-cols-2 gap-4 animate-pulse h-60">
+      <div class="rounded-xl shadow-md bg-brand-purple opacity-10" />
+      <div class="rounded-xl shadow-md bg-brand-purple opacity-10" />
+    </div>
+    <div v-else class="w-full grid grid-cols-2 gap-4">
       <img :src="scan" alt="captured" class="rounded-xl shadow-md" />
       <img v-if="productPhoto" :src="productPhoto" alt="product-photo" />
       <div
@@ -90,7 +107,11 @@
         <span>Add photo of the product</span>
       </div>
     </div>
-    <div class="pt-6 leading-6">
+    <div v-if="loading && !scanData" class="w-full animate-pulse pt-6">
+      <div class="w-48 h-4 mb-2 bg-brand-purple opacity-10 rounded-md" />
+      <div class="w-full h-12 mb-2 bg-brand-purple opacity-10 rounded-lg" />
+    </div>
+    <div v-else class="pt-6 leading-6">
       <span class="pb-2">This product contains: </span>
       <p class="text-sm">
         2 humectants, 3 emollients, 1 harsh detergent, 2 mild detergents, 3
@@ -98,7 +119,11 @@
       </p>
     </div>
     <div class="my-6 h-px w-full bg-gray-700" />
-    <div>
+    <div v-if="loading && !scanData" class="w-full animate-pulse">
+      <div class="w-48 h-4 mb-2 bg-brand-purple opacity-10 rounded-md" />
+      <div class="w-full h-40 mb-2 bg-brand-purple opacity-10 rounded-lg" />
+    </div>
+    <div v-else>
       <h2 class="pb-2">Ingredients overview</h2>
       <p class="text-sm">
         Aqua, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Sodium
@@ -111,7 +136,11 @@
         C14-15 Alcohols, Sodium Benzoate
       </p>
     </div>
-    <div class="mt-6">
+    <div v-if="loading && !scanData" class="w-full animate-pulse pt-6">
+      <div class="w-48 h-4 mb-2 bg-brand-purple opacity-10 rounded-md" />
+      <div class="w-full h-40 mb-2 bg-brand-purple opacity-10 rounded-lg" />
+    </div>
+    <div v-else class="mt-6">
       <h2 class="pb-2">Grouped by type</h2>
       <p class="text-sm">Humectants- (2) - Glycerin, Panthenol</p>
       <p class="text-sm">
@@ -128,7 +157,10 @@
         Sodium Benzoate
       </p>
     </div>
-    <div class="flex flex-row font-medium mt-6 space-x-2">
+    <div v-if="loading && !scanData" class="w-full animate-pulse mt-6">
+      <div class="w-56 h-4 bg-brand-purple opacity-10 rounded-lg" />
+    </div>
+    <div v-else class="flex flex-row font-medium mt-6 space-x-2">
       <span>Something not right?</span>
       <a
         href="mailto:haircare-scan@gmail.com?subject=Something not right"
@@ -157,13 +189,14 @@ export default {
     const openEditProductName = ref(false);
     const scanDate = ref();
     const favourite = ref(false);
-    const loading = ref(true);
+    const loading = ref(false);
 
     onMounted(() => {
       getScanData();
     });
 
     const getScanData = async () => {
+      loading.value = true;
       const docRef = doc(db, `scans-${userUID}`, context.attrs.id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -178,6 +211,7 @@ export default {
         }
         loading.value = false;
       } else {
+        loading.value = false;
         toast.error("Something went wrong!", {
           position: "bottom-right",
           timeout: 2000,
@@ -192,7 +226,6 @@ export default {
           icon: true,
           rtl: false,
         });
-        loading.value = false;
       }
     };
 
