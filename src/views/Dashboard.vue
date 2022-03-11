@@ -12,7 +12,7 @@
       :title="scan.productName ? scan.productName : scan.date"
       :id="scan.id"
       :productPhoto="scan.productPhotoRef ? scan.productPhotoRef : ''"
-      @remove-scan="removeScan(scan.id)"
+      @remove-scan="confirmRemove(scan.id)"
     />
   </div>
   <div v-else-if="loading && !scansData" class="w-full h-full flex flex-col">
@@ -39,6 +39,7 @@
 import EmptyState from "../components/EmptyState.vue";
 import ViewHeader from "../components/ViewHeader.vue";
 import ScanListItem from "../components/ScanListItem.vue";
+import ConfirmToast from "../components/ConfirmToast.vue";
 import {
   collection,
   getDocs,
@@ -78,6 +79,30 @@ export default {
       loading.value = false;
     };
 
+    const confirmRemove = async (id) => {
+      toast.error(
+        {
+          component: ConfirmToast,
+          listeners: {
+            delete: async () => await removeScan(id),
+          },
+        },
+        {
+          position: "bottom-center",
+          timeout: false,
+          closeOnClick: true,
+          pauseOnFocusLoss: false,
+          pauseOnHover: false,
+          draggable: true,
+          draggablePercent: 0.6,
+          hideProgressBar: true,
+          closeButton: false,
+          icon: true,
+          rtl: false,
+        }
+      );
+    };
+
     const removeScan = async (id) => {
       loading.value = true;
       const scanRef = storageRef(storage, `users-scans/${userUID}/${id}.png`);
@@ -85,7 +110,6 @@ export default {
       await deleteObject(scanRef)
         .then(async () => {
           await deleteDoc(doc(db, `scans-${userUID}`, id));
-          await (loading.value = false);
           await toast.info("Removed scan", {
             position: "bottom-right",
             timeout: 1000,
@@ -100,6 +124,8 @@ export default {
             icon: false,
             rtl: false,
           });
+          await getScansData();
+          await (loading.value = false);
         })
         .catch((error) => {
           loading.value = false;
@@ -107,7 +133,7 @@ export default {
         });
     };
 
-    return { scansData, removeScan, loading };
+    return { scansData, removeScan, loading, confirmRemove };
   },
 };
 </script>
