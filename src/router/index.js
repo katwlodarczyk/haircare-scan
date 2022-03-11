@@ -11,6 +11,8 @@ import ArticleView from "../views/ArticleView.vue";
 import Scanner from "../views/Scanner.vue";
 import AnalyzedView from "../views/AnalyzedView.vue";
 import Camera from "../views/Camera.vue";
+import ResetPassword from "../views/ResetPassword.vue";
+import ResetPasswordSent from "../views/ResetPasswordSent.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +34,16 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginVue,
+    },
+    {
+      path: "/reset-password",
+      name: "reset-password",
+      component: ResetPassword,
+    },
+    {
+      path: "/reset-password-sent",
+      name: "reset-password-sent",
+      component: ResetPasswordSent,
     },
     {
       path: "/register",

@@ -36,8 +36,11 @@
         <div v-show="serverErrorMessage" class="text-red-600 text-xs flex mt-1">
           {{ serverErrorMessage }}
         </div>
+        <p class="underline underline-offset-2 text-sm mt-4">
+          <router-link to="/reset-password">Forgot password?</router-link>
+        </p>
 
-        <BrandButton type="submit" class="w-2/3 mx-auto mb-4 mt-10"
+        <BrandButton type="submit" class="w-2/3 mx-auto mb-4 mt-8"
           >Login</BrandButton
         >
       </Form>

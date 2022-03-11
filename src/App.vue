@@ -3,9 +3,14 @@
     <Banner
       v-show="
         isAuthenticated &&
-        !['login', 'welcome', 'register', 'scanner', 'camera'].includes(
-          $route.name
-        )
+        ![
+          'login',
+          'welcome',
+          'register',
+          'scanner',
+          'camera',
+          'forgot-password',
+        ].includes($route.name)
       "
     />
 
@@ -14,9 +19,14 @@
       class="flex flex-col"
       :class="[
         isAuthenticated &&
-        !['login', 'welcome', 'register', 'scanner', 'camera'].includes(
-          $route.name
-        )
+        ![
+          'login',
+          'welcome',
+          'register',
+          'scanner',
+          'camera',
+          'forgot-password',
+        ].includes($route.name)
           ? 'py-36 justify-center'
           : 'py-10',
         ['analyzed'].includes($route.name) ? '' : 'text-center',
@@ -29,9 +39,14 @@
     <TabBar
       v-if="
         isAuthenticated &&
-        !['login', 'welcome', 'register', 'scanner', 'camera'].includes(
-          $route.name
-        )
+        ![
+          'login',
+          'welcome',
+          'register',
+          'scanner',
+          'camera',
+          'forgot-password',
+        ].includes($route.name)
       "
     />
   </div>

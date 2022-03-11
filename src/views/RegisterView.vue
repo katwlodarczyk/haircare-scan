@@ -35,7 +35,7 @@
           {{ serverErrorMessage }}
         </div>
 
-        <BrandButton type="submit" class="w-2/3 mx-auto mb-4 mt-10"
+        <BrandButton type="submit" class="w-2/3 mx-auto mb-4 mt-16"
           >Register</BrandButton
         >
       </Form>
