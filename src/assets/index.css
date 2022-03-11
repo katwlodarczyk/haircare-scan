@@ -85,3 +85,17 @@ body {
     align-self: flex-start;
     flex: none;
 }
+
+
+@media screen and (max-height: 670px) {
+    #camera-container {
+        height: 70% !important
+    }
+}
+
+@media screen and (min-width: 450px) {
+    #camera-container {
+        height: 85% !important
+    }
+}
+  
