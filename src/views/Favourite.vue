@@ -1,7 +1,7 @@
 <template>
   <EmptyState
     v-if="!loading && !favData"
-    withArrow="false"
+    :withArrow="false"
     topText="You don't have any favourite scans yet."
   />
   <div v-else-if="!loading && favData">

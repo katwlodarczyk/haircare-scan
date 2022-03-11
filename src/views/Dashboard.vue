@@ -46,6 +46,8 @@ import {
   getFirestore,
   doc,
   deleteDoc,
+  query,
+  orderBy,
 } from "firebase/firestore";
 import { onMounted, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
@@ -69,7 +71,8 @@ export default {
     const getScansData = async () => {
       loading.value = true;
       let scans = [];
-      const docSnap = await getDocs(scansRef);
+      const q = query(scansRef, orderBy("date", "desc"));
+      const docSnap = await getDocs(q);
       if (docSnap.size) {
         docSnap.forEach((doc) => {
           scans.push({ ...doc.data(), ...{ id: doc.id } });
