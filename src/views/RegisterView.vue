@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-brand-nude h-screen flex flex-col space-y-10">
+  <div class="bg-brand-nude h-full flex flex-col space-y-10">
     <Banner withSlogan class="" />
     <div class="px-10">
       <h1 class="text-2xl font-medium pb-8">Create a new account</h1>
@@ -46,8 +46,8 @@
     </div>
 
     <BrandButton
-      @click="() => onSocialSubmit('google')"
-      class="mx-auto mt-12 flex flex-row fixed inset-x-0 bottom-20"
+      @click="() => handleSocialSubmit('google')"
+      class="mx-auto mt-12 flex flex-row inset-x-0 bottom-20"
       type="dark"
       text="xs"
     >

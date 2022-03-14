@@ -8,15 +8,14 @@
         <div class="flex flex-row space-x-4">
           <span>Email:</span>
           <div class="font-medium">
-            <div v-if="openEmailEdit === true">
-              <input
-                v-model="newEmail"
-                type="text"
-                name="email"
-                :placeholder="user.email"
-                class="rounded-lg bg-brand-pale px-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
-              />
-            </div>
+            <input
+              v-if="openEmailEdit === true"
+              v-model="newEmail"
+              type="text"
+              name="email"
+              :placeholder="user.email"
+              class="shrink rounded-lg bg-brand-pale px-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
+            />
             <span v-else class="">{{ user.email }}</span>
           </div>
         </div>
@@ -40,7 +39,7 @@
           @click="saveEmailEdit"
           v-else
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 self-end text-brand-pink"
+          class="h-6 w-6 self-end shrink-0 text-brand-pink"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -53,20 +52,20 @@
       </div>
 
       <div
-        class="w-full flex flex-row justify-between odd:bg-brand-pale even:bg-brand-nude px-6 py-4 text-lg space-x-4"
+        class="w-screen flex flex-row justify-between odd:bg-brand-pale even:bg-brand-nude px-6 py-4 text-lg space-x-4"
       >
         <div class="flex flex-row space-x-4">
           <span>Password:</span>
           <div class="font-medium">
-            <div v-if="openPasswordEdit === true">
-              <input
-                v-model="newPassword"
-                type="password"
-                name="password"
-                placeholder="**********"
-                class="rounded-lg bg-brand-pale px-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
-              />
-            </div>
+            <input
+              v-if="openPasswordEdit === true"
+              v-model="newPassword"
+              type="password"
+              name="password"
+              placeholder="*********"
+              class="rounded-lg flex-auto w-full bg-brand-pale px-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
+            />
+
             <span v-else class="">**********</span>
           </div>
         </div>
@@ -90,7 +89,7 @@
           @click="savePasswordEdit"
           v-else
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 self-end text-brand-pink"
+          class="h-6 w-6 self-end shrink-0 text-brand-pink"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
