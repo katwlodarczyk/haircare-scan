@@ -113,7 +113,7 @@ export default {
       await deleteObject(scanRef)
         .then(async () => {
           await deleteDoc(doc(db, `scans-${userUID}`, id));
-          await toast.info("Removed scan", {
+          await toast.info("Scan has been removed.", {
             position: "bottom-right",
             timeout: 1000,
             closeOnClick: true,
