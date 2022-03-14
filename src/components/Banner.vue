@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-brand-nude bg-cover px-10 pb-6 pt-12 w-full rounded-b-2xl flex flex-col items-center space-y-3 justify-center"
+    class="bg-brand-nude bg-cover px-10 pb-6 pt-8 w-full rounded-b-2xl flex flex-col items-center space-y-3 justify-center"
     :class="withSlogan ? '' : 'fixed top-0'"
   >
     <img src="../assets/images/logo.svg" alt="logo" />

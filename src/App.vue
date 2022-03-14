@@ -27,7 +27,7 @@
           'camera',
           'forgot-password',
         ].includes($route.name)
-          ? 'py-36 justify-center'
+          ? 'pb-36 pt-28 justify-center'
           : 'py-10',
         ['analyzed'].includes($route.name) ? '' : 'text-center',
       ]"
