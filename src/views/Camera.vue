@@ -39,7 +39,7 @@
     >
       <div class="relative w-full py-8">
         <svg
-          @click="$router.back()"
+          @click="stopCameraStream()"
           xmlns="http://www.w3.org/2000/svg"
           class="absolute top-4 right-4 text-white h-6 w-6"
           viewBox="0 0 20 20"
@@ -52,21 +52,28 @@
           />
         </svg>
       </div>
-      <camera
-        class="mt-4 h-max"
-        v-if="!capturedImage"
-        :resolution="{ width: 375, height: 600 }"
+      <video
+        v-show="!isPhotoTaken"
         ref="camera"
+        :width="375"
+        :height="600"
         autoplay
-      >
-      </camera>
-      <img v-else :src="capturedImage" alt="captured" class="w-screen h-max" />
+        playsinline
+      ></video>
+      <canvas
+        id="photoTaken"
+        v-show="isPhotoTaken"
+        ref="canvas"
+        :width="375"
+        :height="600"
+      ></canvas>
+
       <div
-        class="flex flex-row justify-between items-center text-white px-6 py-4"
-        :class="!capturedImage ? 'mx-auto' : ''"
+        class="w-full flex flex-row justify-between items-center text-white px-6 py-4"
+        :class="!isPhotoTaken ? 'mx-auto' : ''"
       >
         <BrandButton
-          v-show="capturedImage"
+          v-show="isPhotoTaken"
           @click="retake"
           class="flex justify-between items-center space-x-2"
         >
@@ -87,9 +94,9 @@
           </svg>
         </BrandButton>
         <svg
-          v-show="!capturedImage"
-          @click="snapshot"
-          class="fill-current text-white"
+          v-show="!isPhotoTaken"
+          @click="takePhoto()"
+          class="mx-auto z-30 fill-current text-white"
           width="64"
           height="64"
           viewBox="0 0 48 48"
@@ -108,7 +115,7 @@
         </svg>
         <BrandButton
           @click="save(capturedImage)"
-          v-show="capturedImage"
+          v-show="isPhotoTaken"
           type="dark"
           class="flex justify-between items-center space-x-2"
         >
@@ -134,9 +141,8 @@
 </template>
 
 <script>
-import { ref as ref } from "vue";
+import { onMounted, ref as ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import Camera from "simple-vue-camera";
 import BrandButton from "../components/BrandButton.vue";
 import { useToast } from "vue-toastification";
 import {
@@ -155,7 +161,6 @@ export default {
     },
   },
   components: {
-    Camera,
     BrandButton,
   },
   setup(props) {
@@ -166,10 +171,9 @@ export default {
     const storage = getStorage();
     const router = useRouter();
     const route = useRoute();
-    // Get a reference of the component
     const camera = ref();
+    const canvas = ref();
     const capturedImage = ref();
-    const base64CapturedImage = ref();
     const base64Strip = ref();
     const loading = ref(false);
 
@@ -177,35 +181,83 @@ export default {
       contentType: "image/png",
     };
 
-    const devices = camera.value?.devices(["videoinput"]);
-    // Use camera reference to call functions
-    const snapshot = async () => {
-      const blob = await camera.value?.snapshot();
-      // To show the screenshot with an image tag, create a url
-      const url = URL.createObjectURL(blob);
-      blobToBase64(blob);
-      capturedImage.value = url;
-      getNameFromUrl(url);
-    };
+    onMounted(() => {
+      loading.value = true;
+      createCameraElement();
+      loading.value = false;
+    });
+
+    const isCameraOpen = ref(true);
+    const isPhotoTaken = ref(false);
+
+    function createCameraElement() {
+      const constraints = (window.constraints = {
+        audio: false,
+        video: {
+          facingMode: "environment",
+          width: { min: 375, ideal: 1280 },
+          height: { min: 600, ideal: 2048 },
+          aspectRatio: 1.33,
+        },
+      });
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
+          camera.value.srcObject = stream;
+        })
+        .catch((error) => {
+          console.log(error);
+          router.back();
+        });
+    }
+
+    function stopCameraStream() {
+      const tracks = camera.value.srcObject.getTracks();
+      tracks.forEach((track) => {
+        track.stop();
+      });
+      router.back();
+    }
+
+    function takePhoto() {
+      canvas.value.width = camera.value.scrollWidth;
+      canvas.value.height = camera.value.scrollHeight;
+      this.isPhotoTaken = !this.isPhotoTaken;
+      const context = canvas.value.getContext("2d");
+      const photoFromVideo = camera.value;
+      context.imageSmoothingEnabled = false;
+      context.drawImage(
+        photoFromVideo,
+        0,
+        0,
+        canvas.value.width,
+        canvas.value.height
+      );
+      capturedImage.value = document
+        .getElementById("photoTaken")
+        .toDataURL("image/png", 1);
+      base64Strip.value = capturedImage.value.replace(
+        "data:image/png;base64,",
+        ""
+      );
+      const blob = document
+        .getElementById("photoTaken")
+        .toBlob(function (blob) {
+          const url = URL.createObjectURL(blob);
+          getNameFromUrl(url);
+        });
+    }
 
     function getNameFromUrl(url) {
       const urlArray = url.split("/");
       capturedImageName.value = urlArray.pop();
     }
 
-    function blobToBase64(blob) {
-      var reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = function () {
-        var base64data = reader.result;
-        base64Strip.value = base64data.replace("data:image/png;base64,", "");
-        base64CapturedImage.value = base64data;
-      };
-    }
-
     const retake = () => {
       capturedImage.value = "";
+      isPhotoTaken.value = !isPhotoTaken.value;
     };
+
 
     const save = async () => {
       loading.value = true;
@@ -259,13 +311,16 @@ export default {
       router,
       route,
       camera,
-      snapshot,
-      devices,
+      takePhoto,
       capturedImage,
       retake,
       save,
       loading,
       capturedImageName,
+      isCameraOpen,
+      stopCameraStream,
+      canvas,
+      isPhotoTaken,
     };
   },
 };

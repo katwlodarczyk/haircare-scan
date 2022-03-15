@@ -38,7 +38,7 @@
       class="bg-gray-800 w-screen h-screen flex flex-col justify-between py-6"
     >
       <svg
-        @click="$router.back()"
+        @click="stopCameraStream()"
         xmlns="http://www.w3.org/2000/svg"
         class="self-end mr-4 text-white h-6 w-6"
         viewBox="0 0 20 20"
@@ -166,11 +166,9 @@ export default {
     const storage = getStorage();
     const router = useRouter();
     const route = useRoute();
-    // Get a reference of the component
     const camera = ref();
     const canvas = ref();
     const capturedImage = ref();
-    const base64CapturedImage = ref();
     const base64Strip = ref();
     const loading = ref(false);
     const loadingSentences = [

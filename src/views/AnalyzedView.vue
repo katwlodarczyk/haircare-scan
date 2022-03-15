@@ -88,6 +88,7 @@
       <img
         v-if="productPhoto"
         :src="productPhoto"
+        @click="addProductPhoto"
         alt="product-photo"
         class="rounded-xl shadow-md"
       />
