@@ -79,6 +79,21 @@ export default {
         });
         scansData.value = scans;
       }
+      // const lastVisible = docSnap.docs[docSnap.docs.length - 1];
+      // console.log("last", lastVisible);
+      // const next = query(
+      //   scansRef,
+      //   orderBy("date", "desc"),
+      //   startAfter(lastVisible),
+      //   limit(25)
+      // );
+      // if (next.size) {
+      //   next.forEach((doc) => {
+      //     scans.push({ ...doc.data(), ...{ id: doc.id } });
+      //   });
+      //   scansData.value.push(scans);
+      // }
+
       loading.value = false;
     };
 

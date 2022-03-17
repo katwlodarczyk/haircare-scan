@@ -15,6 +15,7 @@
     "simple-vue-camera": "^1.0.2",
     "swiper": "^8.0.6",
     "tesseract.js": "^2.1.5",
+    "uuid": "^8.3.2",
     "vee-validate": "^4.5.9",
     "vue": "^3.2.31",
     "vue-router": "^4.0.12",

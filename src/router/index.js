@@ -13,6 +13,7 @@ import AnalyzedView from "../views/AnalyzedView.vue";
 import Camera from "../views/Camera.vue";
 import ResetPassword from "../views/ResetPassword.vue";
 import ResetPasswordSent from "../views/ResetPasswordSent.vue";
+import AnalyzeText from "../views/AnalyzeText.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -94,6 +95,15 @@ const router = createRouter({
       path: "/camera",
       name: "camera",
       component: Camera,
+      props: true,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/analyze-text",
+      name: "analyze-text",
+      component: AnalyzeText,
       props: true,
       meta: {
         requiresAuth: true,

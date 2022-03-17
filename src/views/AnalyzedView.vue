@@ -84,7 +84,12 @@
       <div class="rounded-xl shadow-md bg-brand-purple opacity-10" />
     </div>
     <div v-else class="w-full grid grid-cols-2 gap-4">
-      <img :src="scan" alt="captured" class="rounded-xl shadow-md" />
+      <img
+        v-if="scan"
+        :src="scan"
+        alt="captured"
+        class="rounded-xl shadow-md"
+      />
       <img
         v-if="productPhoto"
         :src="productPhoto"

@@ -94,6 +94,24 @@
         </BrandButton>
         <svg
           v-show="!isPhotoTaken"
+          @click="$router.push('/analyze-text')"
+          class="absolute bottom-7 left-6"
+          width="42"
+          height="42"
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M31.8174 4C38.1054 4 42.3294 8.306 42.3294 14.714V33.106C42.3294 39.57 38.2354 43.774 31.8994 43.814L16.5134 43.82C10.2254 43.82 5.99939 39.514 5.99939 33.106V14.714C5.99939 8.248 10.0934 4.046 16.4294 4.008L31.8154 4H31.8174ZM31.8174 7L16.4394 7.008C11.7834 7.036 8.99939 9.916 8.99939 14.714V33.106C8.99939 37.936 11.8094 40.82 16.5114 40.82L31.8894 40.814C36.5454 40.786 39.3294 37.902 39.3294 33.106V14.714C39.3294 9.884 36.5214 7 31.8174 7ZM31.4316 30.9474C32.2596 30.9474 32.9316 31.6194 32.9316 32.4474C32.9316 33.2754 32.2596 33.9474 31.4316 33.9474H16.9916C16.1636 33.9474 15.4916 33.2754 15.4916 32.4474C15.4916 31.6194 16.1636 30.9474 16.9916 30.9474H31.4316ZM31.4316 22.5744C32.2596 22.5744 32.9316 23.2464 32.9316 24.0744C32.9316 24.9024 32.2596 25.5744 31.4316 25.5744H16.9916C16.1636 25.5744 15.4916 24.9024 15.4916 24.0744C15.4916 23.2464 16.1636 22.5744 16.9916 22.5744H31.4316ZM22.501 14.2208C23.329 14.2208 24.001 14.8928 24.001 15.7208C24.001 16.5488 23.329 17.2208 22.501 17.2208H16.991C16.163 17.2208 15.491 16.5488 15.491 15.7208C15.491 14.8928 16.163 14.2208 16.991 14.2208H22.501Z"
+            fill="white"
+          />
+        </svg>
+
+        <svg
+          v-show="!isPhotoTaken"
           @click="takePhoto()"
           class="mx-auto z-30 fill-current text-white"
           width="64"
@@ -151,7 +169,15 @@ import {
   uploadString,
   getDownloadURL,
 } from "firebase/storage";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getFirestore,
+  setDoc,
+  query,
+  where,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 import { DateTime } from "luxon";
 
 export default {
@@ -160,6 +186,7 @@ export default {
   },
   setup() {
     const db = getFirestore();
+    const typesRef = collection(db, "types");
     const toast = useToast();
     const userUID = localStorage.getItem("userUID");
     const capturedImageName = ref("");
@@ -171,6 +198,7 @@ export default {
     const capturedImage = ref();
     const base64Strip = ref();
     const loading = ref(false);
+    const ingredientsArray = ref();
     const loadingSentences = [
       "Recognizing ingredients...",
       "Analyzing the types...",
@@ -283,6 +311,92 @@ export default {
       } = await worker.recognize(capturedImage);
       console.log("text", text);
 
+      // split text into ingredients - done!
+      // compare those ingredients with db
+      // return doc name
+      // calculate how many of which types there is
+      // color code the ingredients
+      const textFormatted = text.replace(/(\r\n|\n|\r)/gm, "");
+      const textArray = textFormatted.split(":");
+      ingredientsArray.value = textArray[1].split(",");
+
+      async function compareIngredients(ingredientsArray) {
+        const queries = [];
+        ingredientsArray.forEach((ingredient) => {
+          const q = query(
+            typesRef,
+            where("ingredients", "array-contains", ingredient)
+          );
+          console.log("ingredient", ingredient);
+          queries.push(q);
+        });
+        console.log("queries", queries);
+
+        const compare = async () => {
+          return Promise.all(
+            queries.map((query) => {
+              doSomethingAsync(query);
+            })
+          );
+        };
+
+        const doSomethingAsync = async (query) => {
+          console.log("dosmthasync");
+          const querySnapshot = await getDocs(query);
+          console.log(querySnapshot);
+          querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+          });
+        };
+
+        compare();
+        //   queries.map((i) => {
+        //     const querySnapshot = await getDocs(i);
+        //     return querySnapshot.forEach((doc) => {
+        //       // doc.data() is never undefined for query doc snapshots
+        //       console.log(doc.id, " => ", doc.data());
+        //     });
+        //   })
+        // );
+
+        // Promise.all(queries).then((results) => {
+        //   const querySnapshot = getDocs(queries);
+        //   querySnapshot.forEach((doc) => {
+        //     // doc.data() is never undefined for query doc snapshots
+        //     console.log(doc.id, " => ", doc.data());
+        //   });
+        //   //Do whatever you want with the results array which is an array of QuerySnapshots
+        //   //See https://firebase.google.com/docs/reference/js/firebase.firestore.QuerySnapshot.html
+        // });
+
+        // ingredientsArray.forEach((ingredient) => {
+        //   console.log("ingredient", ingredient);
+        //   const q = query(
+        //     typesRef,
+        //     where(`ingredients.${ingredient}`, "==", true)
+        //   );
+        //   console.log("q", q);
+        // });
+
+        // for (const ingredient of ingredientsArray) {
+        //   console.log("ingredients", ingredient);
+        //   const q = query(
+        //     typesRef,
+        //     where("ingredients", "array-contains", ingredient)
+        //   );
+        //   // const querySnapshot = await getDocs(q);
+        //   // // console.log("query snapshot", querySnapshot);
+        //   // querySnapshot.forEach((doc) => {
+        //   //   // doc.data() is never undefined for query doc snapshots
+        //   //   console.log(doc.id, " => ", doc.data());
+        //   // });
+        //   console.log("q", q);
+        // }
+      }
+
+      await compareIngredients(ingredientsArray.value);
+
       const scanStorage = storageRef(
         storage,
         `users-scans/${userUID}/${capturedImageName.value}.png`
@@ -293,7 +407,12 @@ export default {
           console.log("Uploaded a base64url string!");
           getDownloadURL(snapshot.ref).then((downloadURL) => {
             console.log("File available at", downloadURL);
-            saveScan(capturedImageName.value, downloadURL, text);
+            saveScan(
+              capturedImageName.value,
+              downloadURL,
+              text,
+              ingredientsArray.value
+            );
           });
         })
         .catch((error) => {
@@ -319,18 +438,24 @@ export default {
         name: "analyzed",
         params: {
           id: capturedImageName.value,
-          scan: base64CapturedImage.value,
+          scan: capturedImage.value,
         },
       });
     };
 
-    const saveScan = async (capturedImageName, scanRef, text) => {
+    const saveScan = async (
+      capturedImageName,
+      scanRef,
+      text,
+      ingredientsArray
+    ) => {
       const add = {
         ...{
           date: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
           id: capturedImageName,
           scanRef: scanRef,
           text: text,
+          scannedIngredients: ingredientsArray,
         },
       };
 
