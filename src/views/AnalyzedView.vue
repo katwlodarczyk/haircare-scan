@@ -137,7 +137,7 @@
     </div>
     <div v-else>
       <h2 class="pb-2">Ingredients overview</h2>
-      <p class="text-sm">
+      <p v-if="scanData && scanData.scannedIngredients" class="text-sm">
         <span
           v-for="ingredient in scanData.scannedIngredients"
           :key="ingredient"

@@ -316,7 +316,7 @@ export default {
       // return doc name
       // calculate how many of which types there is
       // color code the ingredients
-      const textFormatted = text.replace(/(\r\n|\n|\r)/gm, "");
+      const textFormatted = text.toLowerCase().replace(/(\r\n|\n|\r)/gm, "");
       const textArray = textFormatted.split(":");
       ingredientsArray.value = textArray[1].split(",");
 
