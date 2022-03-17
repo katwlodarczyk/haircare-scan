@@ -138,14 +138,12 @@
     <div v-else>
       <h2 class="pb-2">Ingredients overview</h2>
       <p class="text-sm">
-        Aqua, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Glycerin, Sodium
-        Chloride, Cocamide MEA, PEG-150 Distearate, Phenoxyethanol, Bis (C13-15
-        Alkoxy) Pg-Amodimethicone, Parfum, Methylparaben, Propylparaben, Cocos
-        Nucifera (Coconut) Oil, Panthenol, Polyquaternium-10, Prunus Amygdalus
-        Dulcis (Sweet Almond) Oil, Tetradibutyl Pentaerithrityl
-        Hydroxyhydrocinnamate, Tetrasodium EDTA, Tris
-        (Tetramethylhydroxypiperidinol) Citrate, Polyquaternium-7, Citric Acid,
-        C14-15 Alcohols, Sodium Benzoate
+        <span
+          v-for="ingredient in scanData.scannedIngredients"
+          :key="ingredient"
+        >
+          {{ ingredient }},
+        </span>
       </p>
     </div>
     <div v-if="loading && !scanData" class="w-full animate-pulse pt-6">

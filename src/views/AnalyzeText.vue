@@ -7,7 +7,7 @@
         v-model="text"
         type="text"
         name="text"
-        rows="8"
+        rows="10"
         class="rounded-lg flex-auto w-full bg-brand-pale px-3 py-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
       />
     </div>

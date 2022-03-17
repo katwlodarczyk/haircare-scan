@@ -95,7 +95,7 @@
         <svg
           v-show="!isPhotoTaken"
           @click="$router.push('/analyze-text')"
-          class="absolute bottom-7 left-6"
+          class="absolute bottom-7 right-6"
           width="42"
           height="42"
           viewBox="0 0 48 48"
