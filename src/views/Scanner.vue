@@ -369,12 +369,12 @@ export default {
         const compare = async () => {
           return Promise.all(
             queries.map((query) => {
-              doSomethingAsync(query);
+              queryDatabase(query);
             })
           );
         };
 
-        const doSomethingAsync = async (query) => {
+        const queryDatabase = async (query) => {
           const querySnapshot = await getDocs(query);
           querySnapshot.forEach((doc) => {
             ingredients.push(
@@ -438,49 +438,68 @@ export default {
           scan: capturedImage.value,
         },
       });
-    };
 
-    const saveScan = async (
-      capturedImageName,
-      scanRef,
-      text,
-      ingredientsArray,
-      analyzedTypes,
-      analyzedIngredients
-    ) => {
-      const add = {
-        ...{
-          date: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
-          id: capturedImageName,
-          scanRef: scanRef,
-          text: text,
-          scannedIngredients: ingredientsArray,
-          analyzedTypes: analyzedTypes,
-          analyzedIngredients: analyzedIngredients,
-        },
+      // loading.value = false;
+      // toast.error(
+      //   "Oops! Could not analyze it. Try again or use analyze text function.",
+      //   {
+      //     position: "bottom-right",
+      //     timeout: 4000,
+      //     closeOnClick: true,
+      //     pauseOnFocusLoss: true,
+      //     pauseOnHover: true,
+      //     draggable: true,
+      //     draggablePercent: 0.1,
+      //     showCloseButtonOnHover: false,
+      //     hideProgressBar: true,
+      //     closeButton: false,
+      //     icon: true,
+      //     rtl: false,
+      //   }
+      // );
+
+      const saveScan = async (
+        capturedImageName,
+        scanRef,
+        text,
+        ingredientsArray,
+        analyzedTypes,
+        analyzedIngredients
+      ) => {
+        const add = {
+          ...{
+            date: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
+            id: capturedImageName,
+            scanRef: scanRef,
+            text: text,
+            scannedIngredients: ingredientsArray,
+            analyzedTypes: analyzedTypes,
+            analyzedIngredients: analyzedIngredients,
+          },
+        };
+
+        const scanFile = doc(db, `scans-${userUID}`, `${capturedImageName}`);
+
+        try {
+          await setDoc(scanFile, add, { merge: true });
+        } catch (e) {
+          toast.error("Oops, something went wrong. Try again!", {
+            position: "bottom-right",
+            timeout: 2000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.1,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: false,
+            icon: true,
+            rtl: false,
+          });
+          console.log(e);
+        }
       };
-
-      const scanFile = doc(db, `scans-${userUID}`, `${capturedImageName}`);
-
-      try {
-        await setDoc(scanFile, add, { merge: true });
-      } catch (e) {
-        toast.error("Oops, something went wrong. Try again!", {
-          position: "bottom-right",
-          timeout: 2000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.1,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
-          closeButton: false,
-          icon: true,
-          rtl: false,
-        });
-        console.log(e);
-      }
     };
 
     return {
