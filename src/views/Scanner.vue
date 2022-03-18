@@ -131,7 +131,7 @@
           />
         </svg>
         <BrandButton
-          @click="analyze(capturedImage)"
+          @click="analyzeFunction(capturedImage)"
           v-show="isPhotoTaken"
           type="dark"
           class="flex justify-between items-center space-x-2"
@@ -292,6 +292,32 @@ export default {
       // logger: (m) => console.log(m),
     });
 
+    const analyzeFunction = async () => {
+      try {
+        await analyze(capturedImage.value);
+      } catch (error) {
+        loading.value = false;
+        console.log(error);
+        toast.error(
+          "Oops, something went wrong. Retake the photo and try again!",
+          {
+            position: "bottom-right",
+            timeout: 3000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.1,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: false,
+            icon: true,
+            rtl: false,
+          }
+        );
+      }
+    };
+
     const analyze = async (capturedImage) => {
       loading.value = true;
 
@@ -316,9 +342,13 @@ export default {
       // return doc name
       // calculate how many of which types there is
       // color code the ingredients
-      const textFormatted = text.toLowerCase().replace(/(\r\n|\n|\r)/gm, "");
+
+      const textFormatted = text
+        .toLowerCase()
+        .replace(/(\n|\r)/gm, "")
+        .replace(/.$/, "");
       const textArray = textFormatted.split(":");
-      ingredientsArray.value = textArray[1].split(",");
+      ingredientsArray.value = textArray[1].split(", ");
 
       async function compareIngredients(ingredientsArray) {
         const queries = [];
@@ -351,48 +381,6 @@ export default {
         };
 
         compare();
-        //   queries.map((i) => {
-        //     const querySnapshot = await getDocs(i);
-        //     return querySnapshot.forEach((doc) => {
-        //       // doc.data() is never undefined for query doc snapshots
-        //       console.log(doc.id, " => ", doc.data());
-        //     });
-        //   })
-        // );
-
-        // Promise.all(queries).then((results) => {
-        //   const querySnapshot = getDocs(queries);
-        //   querySnapshot.forEach((doc) => {
-        //     // doc.data() is never undefined for query doc snapshots
-        //     console.log(doc.id, " => ", doc.data());
-        //   });
-        //   //Do whatever you want with the results array which is an array of QuerySnapshots
-        //   //See https://firebase.google.com/docs/reference/js/firebase.firestore.QuerySnapshot.html
-        // });
-
-        // ingredientsArray.forEach((ingredient) => {
-        //   console.log("ingredient", ingredient);
-        //   const q = query(
-        //     typesRef,
-        //     where(`ingredients.${ingredient}`, "==", true)
-        //   );
-        //   console.log("q", q);
-        // });
-
-        // for (const ingredient of ingredientsArray) {
-        //   console.log("ingredients", ingredient);
-        //   const q = query(
-        //     typesRef,
-        //     where("ingredients", "array-contains", ingredient)
-        //   );
-        //   // const querySnapshot = await getDocs(q);
-        //   // // console.log("query snapshot", querySnapshot);
-        //   // querySnapshot.forEach((doc) => {
-        //   //   // doc.data() is never undefined for query doc snapshots
-        //   //   console.log(doc.id, " => ", doc.data());
-        //   // });
-        //   console.log("q", q);
-        // }
       }
 
       await compareIngredients(ingredientsArray.value);
@@ -499,6 +487,7 @@ export default {
       createCameraElement,
       canvas,
       isPhotoTaken,
+      analyzeFunction,
     };
   },
 };
