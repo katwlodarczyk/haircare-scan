@@ -199,6 +199,8 @@ export default {
     const base64Strip = ref();
     const loading = ref(false);
     const ingredientsArray = ref();
+    const analyzedTypes = ref();
+    const analyzedIngredients = ref();
     const loadingSentences = [
       "Recognizing ingredients...",
       "Analyzing the types...",
@@ -338,8 +340,8 @@ export default {
       console.log("text", text);
 
       // split text into ingredients - done!
-      // compare those ingredients with db
-      // return doc name
+      // compare those ingredients with db - done!
+      // return doc name - done!
       // calculate how many of which types there is
       // color code the ingredients
 
@@ -352,6 +354,8 @@ export default {
 
       async function compareIngredients(ingredientsArray) {
         const queries = [];
+        const analyzed = [];
+        const ingredients = [];
         ingredientsArray.forEach((ingredient) => {
           const q = query(
             typesRef,
@@ -371,12 +375,15 @@ export default {
         };
 
         const doSomethingAsync = async (query) => {
-          console.log("dosmthasync");
           const querySnapshot = await getDocs(query);
-          console.log(querySnapshot);
           querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
+            ingredients.push(
+              querySnapshot.query._query.filters[0].value.stringValue
+            );
+            analyzedIngredients.value = ingredients;
             console.log(doc.id, " => ", doc.data());
+            analyzed.push(doc.data());
+            analyzedTypes.value = analyzed;
           });
         };
 
@@ -399,7 +406,9 @@ export default {
               capturedImageName.value,
               downloadURL,
               text,
-              ingredientsArray.value
+              ingredientsArray.value,
+              analyzedTypes.value,
+              analyzedIngredients.value
             );
           });
         })
@@ -435,7 +444,9 @@ export default {
       capturedImageName,
       scanRef,
       text,
-      ingredientsArray
+      ingredientsArray,
+      analyzedTypes,
+      analyzedIngredients
     ) => {
       const add = {
         ...{
@@ -444,6 +455,8 @@ export default {
           scanRef: scanRef,
           text: text,
           scannedIngredients: ingredientsArray,
+          analyzedTypes: analyzedTypes,
+          analyzedIngredients: analyzedIngredients,
         },
       };
 
@@ -488,6 +501,8 @@ export default {
       canvas,
       isPhotoTaken,
       analyzeFunction,
+      analyzedTypes,
+      analyzedIngredients,
     };
   },
 };
