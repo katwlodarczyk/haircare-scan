@@ -307,7 +307,8 @@ export default {
     const analyzeFunction = async () => {
       try {
         await analyze(capturedImage.value);
-        setTimeout(() => {
+
+        const exceptionTimeout = setTimeout(() => {
           try {
             throw new Error(`Throw an exception.`);
           } catch (error) {
@@ -330,7 +331,7 @@ export default {
               }
             );
           }
-        }, 12000);
+        }, 6000);
       } catch (error) {
         loading.value = false;
         console.log(error);
@@ -442,6 +443,12 @@ export default {
               console.log(error);
             });
           loading.value = false;
+          // kill timeout
+          const highestId = window.setTimeout(() => {
+            for (let i = highestId; i >= 0; i--) {
+              window.clearInterval(i);
+            }
+          }, 0);
           await router.push({
             name: "analyzed",
             params: {
