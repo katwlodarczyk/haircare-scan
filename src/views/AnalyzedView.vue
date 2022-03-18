@@ -136,7 +136,7 @@
       <div class="w-full h-40 mb-2 bg-brand-purple opacity-10 rounded-lg" />
     </div>
     <div v-else>
-      <h2 class="pb-2">Ingredients overview</h2>
+      <h2 class="pb-2">Analyzed ingredients overview</h2>
       <p v-if="scanData && scanData.analyzedIngredients" class="text-sm">
         <span
           v-for="ingredient in scanData.analyzedIngredients"

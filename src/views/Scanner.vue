@@ -206,8 +206,17 @@ export default {
       "Analyzing the types...",
       "Saving the scan...",
       "Preparing the view...",
+      "Not much longer now...",
     ];
     let i = ref(0);
+
+    const isCameraOpen = ref(true);
+    const isPhotoTaken = ref(false);
+
+    const scanStorage = storageRef(
+      storage,
+      `users-scans/${userUID}/${capturedImageName.value}.png`
+    );
 
     const metadata = {
       contentType: "image/png",
@@ -218,9 +227,6 @@ export default {
       createCameraElement();
       loading.value = false;
     });
-
-    const isCameraOpen = ref(true);
-    const isPhotoTaken = ref(false);
 
     function createCameraElement() {
       const constraints = (window.constraints = {
@@ -287,6 +293,10 @@ export default {
 
     const retake = () => {
       capturedImage.value = "";
+      i.value = 0;
+      capturedImageName.value = "";
+      analyzedIngredients.value = [];
+      analyzedTypes.value = [];
       isPhotoTaken.value = !isPhotoTaken.value;
     };
 
@@ -297,6 +307,30 @@ export default {
     const analyzeFunction = async () => {
       try {
         await analyze(capturedImage.value);
+        setTimeout(() => {
+          try {
+            throw new Error(`Throw an exception.`);
+          } catch (error) {
+            loading.value = false;
+            toast.error(
+              "Oops! Could not analyze it. Try again or use analyze from text function.",
+              {
+                position: "bottom-right",
+                timeout: 3000,
+                closeOnClick: true,
+                pauseOnFocusLoss: true,
+                pauseOnHover: true,
+                draggable: true,
+                draggablePercent: 0.1,
+                showCloseButtonOnHover: false,
+                hideProgressBar: true,
+                closeButton: false,
+                icon: true,
+                rtl: false,
+              }
+            );
+          }
+        }, 12000);
       } catch (error) {
         loading.value = false;
         console.log(error);
@@ -339,9 +373,6 @@ export default {
       } = await worker.recognize(capturedImage);
       console.log("text", text);
 
-      // split text into ingredients - done!
-      // compare those ingredients with db - done!
-      // return doc name - done!
       // calculate how many of which types there is
       // color code the ingredients
 
@@ -352,21 +383,21 @@ export default {
       const textArray = textFormatted.split(":");
       ingredientsArray.value = textArray[1].split(", ");
 
-      async function compareIngredients(ingredientsArray) {
+      function compareIngredients(ingredientsArray) {
         const queries = [];
         const analyzed = [];
         const ingredients = [];
+
         ingredientsArray.forEach((ingredient) => {
           const q = query(
             typesRef,
             where("ingredients", "array-contains", ingredient)
           );
-          console.log("ingredient", ingredient);
           queries.push(q);
         });
         console.log("queries", queries);
 
-        const compare = async () => {
+        const compare = () => {
           return Promise.all(
             queries.map((query) => {
               queryDatabase(query);
@@ -384,79 +415,63 @@ export default {
             console.log(doc.id, " => ", doc.data());
             analyzed.push(doc.data());
             analyzedTypes.value = analyzed;
+            progressOrStopExecution();
           });
         };
-
         compare();
       }
 
-      await compareIngredients(ingredientsArray.value);
-
-      const scanStorage = storageRef(
-        storage,
-        `users-scans/${userUID}/${capturedImageName.value}.png`
-      );
-
-      await uploadString(scanStorage, base64Strip.value, "base64", metadata)
-        .then((snapshot) => {
-          console.log("Uploaded a base64url string!");
-          getDownloadURL(snapshot.ref).then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            saveScan(
-              capturedImageName.value,
-              downloadURL,
-              text,
-              ingredientsArray.value,
-              analyzedTypes.value,
-              analyzedIngredients.value
-            );
-          });
-        })
-        .catch((error) => {
+      async function progressOrStopExecution() {
+        if (analyzedIngredients.value) {
+          await uploadString(scanStorage, base64Strip.value, "base64", metadata)
+            .then((snapshot) => {
+              console.log("Uploaded a base64url string!");
+              getDownloadURL(snapshot.ref).then((downloadURL) => {
+                console.log("File available at", downloadURL);
+                saveScan(
+                  capturedImageName.value,
+                  downloadURL,
+                  text,
+                  ingredientsArray.value,
+                  analyzedTypes.value,
+                  analyzedIngredients.value
+                );
+              });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
           loading.value = false;
-          toast.error(error.message, {
-            position: "bottom-right",
-            timeout: 2000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.1,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: false,
-            icon: true,
-            rtl: false,
+          await router.push({
+            name: "analyzed",
+            params: {
+              id: capturedImageName.value,
+              scan: capturedImage.value,
+            },
           });
-        });
+        } else {
+          loading.value = false;
+          toast.error(
+            "Oops! Could not analyze it. Try again or use analyze from text function.",
+            {
+              position: "bottom-right",
+              timeout: 4000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: true,
+              rtl: false,
+            }
+          );
+        }
+      }
 
-      loading.value = false;
-      await router.push({
-        name: "analyzed",
-        params: {
-          id: capturedImageName.value,
-          scan: capturedImage.value,
-        },
-      });
-
-      // loading.value = false;
-      // toast.error(
-      //   "Oops! Could not analyze it. Try again or use analyze text function.",
-      //   {
-      //     position: "bottom-right",
-      //     timeout: 4000,
-      //     closeOnClick: true,
-      //     pauseOnFocusLoss: true,
-      //     pauseOnHover: true,
-      //     draggable: true,
-      //     draggablePercent: 0.1,
-      //     showCloseButtonOnHover: false,
-      //     hideProgressBar: true,
-      //     closeButton: false,
-      //     icon: true,
-      //     rtl: false,
-      //   }
-      // );
+      await compareIngredients(ingredientsArray.value);
 
       const saveScan = async (
         capturedImageName,
@@ -483,20 +498,6 @@ export default {
         try {
           await setDoc(scanFile, add, { merge: true });
         } catch (e) {
-          toast.error("Oops, something went wrong. Try again!", {
-            position: "bottom-right",
-            timeout: 2000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.1,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: false,
-            icon: true,
-            rtl: false,
-          });
           console.log(e);
         }
       };
