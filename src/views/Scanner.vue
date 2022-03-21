@@ -201,6 +201,7 @@ export default {
     const ingredientsArray = ref();
     const analyzedTypes = ref();
     const analyzedIngredients = ref();
+    const ingredientsTypes =ref();
     const loadingSentences = [
       "Recognizing ingredients...",
       "Analyzing the types...",
@@ -308,30 +309,30 @@ export default {
       try {
         await analyze(capturedImage.value);
 
-        const exceptionTimeout = setTimeout(() => {
-          try {
-            throw new Error(`Throw an exception.`);
-          } catch (error) {
-            loading.value = false;
-            toast.error(
-              "Oops! Could not analyze it. Try again or use analyze from text function.",
-              {
-                position: "bottom-right",
-                timeout: 3000,
-                closeOnClick: true,
-                pauseOnFocusLoss: true,
-                pauseOnHover: true,
-                draggable: true,
-                draggablePercent: 0.1,
-                showCloseButtonOnHover: false,
-                hideProgressBar: true,
-                closeButton: false,
-                icon: true,
-                rtl: false,
-              }
-            );
-          }
-        }, 6000);
+        // const exceptionTimeout = setTimeout(() => {
+        //   try {
+        //     throw new Error(`Throw an exception.`);
+        //   } catch (error) {
+        //     loading.value = false;
+        //     toast.error(
+        //       "Oops! Could not analyze it. Try again or use analyze from text function.",
+        //       {
+        //         position: "bottom-right",
+        //         timeout: 3000,
+        //         closeOnClick: true,
+        //         pauseOnFocusLoss: true,
+        //         pauseOnHover: true,
+        //         draggable: true,
+        //         draggablePercent: 0.1,
+        //         showCloseButtonOnHover: false,
+        //         hideProgressBar: true,
+        //         closeButton: false,
+        //         icon: true,
+        //         rtl: false,
+        //       }
+        //     );
+        //   }
+        // }, 10000);
       } catch (error) {
         loading.value = false;
         console.log(error);
@@ -388,6 +389,7 @@ export default {
         const queries = [];
         const analyzed = [];
         const ingredients = [];
+        const typedIngredients = [];
 
         ingredientsArray.forEach((ingredient) => {
           const q = query(
@@ -413,9 +415,24 @@ export default {
               querySnapshot.query._query.filters[0].value.stringValue
             );
             analyzedIngredients.value = ingredients;
-            console.log(doc.id, " => ", doc.data());
+            console.log(
+              doc.id,
+              " => ",
+              doc.data(),
+              querySnapshot.query._query.filters[0].value.stringValue
+            );
+            const typedIngredient = {
+              ingredient:
+                querySnapshot.query._query.filters[0].value.stringValue,
+              type: doc.data().name,
+              color: doc.data().color,
+            };
+
             analyzed.push(doc.data());
             analyzedTypes.value = analyzed;
+
+            typedIngredients.push(typedIngredient);
+            ingredientsTypes.value = typedIngredients;
             progressOrStopExecution();
           });
         };
@@ -435,7 +452,8 @@ export default {
                   text,
                   ingredientsArray.value,
                   analyzedTypes.value,
-                  analyzedIngredients.value
+                  analyzedIngredients.value,
+                  ingredientsTypes.value
                 );
               });
             })
@@ -444,11 +462,11 @@ export default {
             });
           loading.value = false;
           // kill timeout
-          const highestId = window.setTimeout(() => {
-            for (let i = highestId; i >= 0; i--) {
-              window.clearInterval(i);
-            }
-          }, 0);
+          // const highestId = window.setTimeout(() => {
+          //   for (let i = highestId; i >= 0; i--) {
+          //     window.clearInterval(i);
+          //   }
+          // }, 0);
           await router.push({
             name: "analyzed",
             params: {
@@ -486,7 +504,8 @@ export default {
         text,
         ingredientsArray,
         analyzedTypes,
-        analyzedIngredients
+        analyzedIngredients,
+        ingredientsTypes
       ) => {
         const add = {
           ...{
@@ -497,6 +516,7 @@ export default {
             scannedIngredients: ingredientsArray,
             analyzedTypes: analyzedTypes,
             analyzedIngredients: analyzedIngredients,
+            ingredientsTypes: ingredientsTypes,
           },
         };
 

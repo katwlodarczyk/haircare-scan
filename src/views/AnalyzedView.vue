@@ -119,17 +119,6 @@
         <span>Add photo of the product</span>
       </div>
     </div>
-    <div v-if="loading && !scanData" class="w-full animate-pulse pt-6">
-      <div class="w-48 h-4 mb-2 bg-brand-purple opacity-10 rounded-md" />
-      <div class="w-full h-12 mb-2 bg-brand-purple opacity-10 rounded-lg" />
-    </div>
-    <div v-else class="pt-6 leading-6">
-      <span class="pb-2">This product contains: </span>
-      <p class="text-sm">
-        2 humectants, 3 emollients, 1 harsh detergent, 2 mild detergents, 3
-        preservatives
-      </p>
-    </div>
     <div class="my-6 h-px w-full bg-gray-700" />
     <div v-if="loading && !scanData" class="w-full animate-pulse">
       <div class="w-48 h-4 mb-2 bg-brand-purple opacity-10 rounded-md" />
@@ -137,12 +126,16 @@
     </div>
     <div v-else>
       <h2 class="pb-2">Analyzed ingredients overview</h2>
-      <p v-if="scanData && scanData.analyzedIngredients" class="text-sm">
+      <p
+        v-if="scanData && scanData.ingredientsTypes"
+        class="text-sm tracking-wide"
+      >
         <span
-          v-for="ingredient in scanData.analyzedIngredients"
-          :key="ingredient"
+          v-for="(ingredient, index) in scanData.ingredientsTypes"
+          :key="index"
+          :style="{ color: ingredient.color }"
         >
-          {{ ingredient }},
+          {{ ingredient.ingredient }},
         </span>
       </p>
     </div>
@@ -152,20 +145,21 @@
     </div>
     <div v-else class="mt-6">
       <h2 class="pb-2">Grouped by type</h2>
-      <p class="text-sm">Humectants- (2) - Glycerin, Panthenol</p>
-      <p class="text-sm">
-        Emollients - (3) - Bis (C13-15 Alkoxy) Pg-Amodimethicone, Cocos Nucifera
-        (Coconut) Oil, Prunus Amygdalus Dulcis (Sweet Almond) Oil
-      </p>
-      <p class="text-sm">Harsh detergents - (1) - Sodium Laureth Sulfate</p>
-      <p class="text-sm">
-        Mild detergetns - (2) - Cocamidopropyl Betaine, Cocamide MEA, PEG-150
-        Distearate
-      </p>
-      <p class="text-sm">
-        Preservatives - (3) - Phenoxyethanol, Methylparaben, Propylparaben,
-        Sodium Benzoate
-      </p>
+      <div
+        class="text-sm flex flex-row space-x-1 tracking-wide"
+        :style="{ color: value[0].color }"
+        v-for="[key, value] in groupedAnalysis"
+        :key="key"
+      >
+        <p class="capitalize">{{ key }} -</p>
+        <p>({{ value.length }}) -</p>
+        <p v-for="(ingredient, index) in value" :key="index" class="">
+          {{ ingredient.ingredient }}
+          <span :class="index == value.length - 1 ? 'hidden' : 'inline'"
+            >,</span
+          >
+        </p>
+      </div>
     </div>
     <div v-if="loading && !scanData" class="w-full animate-pulse mt-6">
       <div class="w-56 h-4 bg-brand-purple opacity-10 rounded-lg" />
@@ -202,6 +196,7 @@ export default {
     const scanDate = ref();
     const favourite = ref(false);
     const loading = ref(false);
+    const groupedAnalysis = ref();
 
     onMounted(() => {
       getScanData();
@@ -222,6 +217,10 @@ export default {
         if (scanData.value.favourite) {
           favourite.value = scanData.value.favourite;
         }
+        groupBy(
+          scanData.value.ingredientsTypes,
+          (ingredient) => ingredient.type
+        );
         loading.value = false;
       } else {
         loading.value = false;
@@ -298,6 +297,21 @@ export default {
       });
     };
 
+    function groupBy(list, keyGetter) {
+      const map = new Map();
+      list.forEach((item) => {
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+          map.set(key, [item]);
+        } else {
+          collection.push(item);
+        }
+      });
+      groupedAnalysis.value = map;
+      return map;
+    }
+
     return {
       productName,
       openEditProductName,
@@ -313,6 +327,8 @@ export default {
       scanData,
       scanDate,
       loading,
+      groupBy,
+      groupedAnalysis,
     };
   },
 };
