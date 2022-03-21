@@ -48,6 +48,10 @@ export default {
     const router = useRouter();
     const loading = ref(false);
     const ingredientsArray = ref();
+    const analyzedIngredients = ref();
+    const analyzedTypes = ref();
+    const ingredientsTypes = ref();
+
     const loadingSentences = [
       "Recognizing ingredients...",
       "Analyzing the types...",
@@ -66,66 +70,180 @@ export default {
         else i.value = 0;
       }, 6000);
 
-      // split text into ingredients - done!
-      // compare those ingredients with db
-      // return doc name
-      // calculate how many of which types there is
-      // color code the ingredients
-
-      ingredientsArray.value = text.split(",");
+      const textFormatted = text
+        .toLowerCase()
+        .replace(/(\n|\r)/gm, "")
+        .replace(/.$/, "");
+      ingredientsArray.value = textFormatted.split(", ");
 
       async function compareIngredients(ingredientsArray) {
         const queries = [];
+        const analyzed = [];
+        const ingredients = [];
+        const typedIngredients = [];
+
         ingredientsArray.forEach((ingredient) => {
           const q = query(
             typesRef,
             where("ingredients", "array-contains", ingredient)
           );
-          console.log("ingredient", ingredient);
           queries.push(q);
         });
         console.log("queries", queries);
 
-        const compare = async () => {
+        const compare = () => {
           return Promise.all(
             queries.map((query) => {
-              doSomethingAsync(query);
+              queryDatabase(query);
             })
           );
         };
 
-        const doSomethingAsync = async (query) => {
-          console.log("dosmthasync");
+        const queryDatabase = async (query) => {
           const querySnapshot = await getDocs(query);
-          console.log(querySnapshot);
           querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+            ingredients.push(
+              querySnapshot.query._query.filters[0].value.stringValue
+            );
+            analyzedIngredients.value = ingredients;
+            console.log(
+              doc.id,
+              " => ",
+              doc.data(),
+              querySnapshot.query._query.filters[0].value.stringValue
+            );
+            const typedIngredient = {
+              ingredient:
+                querySnapshot.query._query.filters[0].value.stringValue,
+              type: doc.data().name,
+              color: doc.data().color,
+            };
+
+            analyzed.push(doc.data());
+            analyzedTypes.value = analyzed;
+
+            typedIngredients.push(typedIngredient);
+            ingredientsTypes.value = typedIngredients;
+            progressOrStopExecution();
           });
         };
+        try {
+          compare();
 
-        compare();
+          const exceptionTimeout = setTimeout(() => {
+            try {
+              throw new Error(`Throw an exception.`);
+            } catch (error) {
+              loading.value = false;
+              toast.error(
+                "Oops! Could not analyze it. Try again or use analyze from text function.",
+                {
+                  position: "bottom-right",
+                  timeout: 3000,
+                  closeOnClick: true,
+                  pauseOnFocusLoss: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  draggablePercent: 0.1,
+                  showCloseButtonOnHover: false,
+                  hideProgressBar: true,
+                  closeButton: false,
+                  icon: true,
+                  rtl: false,
+                }
+              );
+            }
+          }, 10000);
+        } catch (error) {
+          loading.value = false;
+          console.log(error);
+          toast.error(
+            "Oops, something went wrong. Retake the photo and try again!",
+            {
+              position: "bottom-right",
+              timeout: 3000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: true,
+              rtl: false,
+            }
+          );
+        }
+      }
+
+      async function progressOrStopExecution() {
+        if (analyzedIngredients.value) {
+          await saveScan(
+            scanName.value,
+            text,
+            ingredientsArray.value,
+            analyzedTypes.value,
+            analyzedIngredients.value,
+            ingredientsTypes.value
+          ).catch((error) => {
+            console.log(error);
+          });
+          loading.value = false;
+          // kill timeout
+          const highestId = window.setTimeout(() => {
+            for (let i = highestId; i >= 0; i--) {
+              window.clearInterval(i);
+            }
+          }, 0);
+          await router.push({
+            name: "analyzed",
+            params: {
+              id: scanName.value,
+            },
+          });
+        } else {
+          loading.value = false;
+          toast.error(
+            "Oops! Could not analyze it. Try again or use analyze from text function.",
+            {
+              position: "bottom-right",
+              timeout: 4000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: true,
+              rtl: false,
+            }
+          );
+        }
       }
 
       await compareIngredients(ingredientsArray.value);
-      await saveScan(scanName.value, text, ingredientsArray.value);
-
-      loading.value = false;
-      await router.push({
-        name: "analyzed",
-        params: {
-          id: scanName.value,
-        },
-      });
     };
 
-    const saveScan = async (scanName, text, ingredientsArray) => {
+    const saveScan = async (
+      scanName,
+      text,
+      ingredientsArray,
+      analyzedTypes,
+      analyzedIngredients,
+      ingredientsTypes
+    ) => {
       const add = {
         ...{
           date: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
           id: scanName,
           text: text,
           scannedIngredients: ingredientsArray,
+          analyzedTypes: analyzedTypes,
+          analyzedIngredients: analyzedIngredients,
+          ingredientsTypes: ingredientsTypes,
         },
       };
 
