@@ -201,7 +201,7 @@ export default {
     const ingredientsArray = ref();
     const analyzedTypes = ref();
     const analyzedIngredients = ref();
-    const ingredientsTypes =ref();
+    const ingredientsTypes = ref();
     const loadingSentences = [
       "Recognizing ingredients...",
       "Analyzing the types...",
@@ -306,54 +306,7 @@ export default {
     });
 
     const analyzeFunction = async () => {
-      try {
-        await analyze(capturedImage.value);
-
-        // const exceptionTimeout = setTimeout(() => {
-        //   try {
-        //     throw new Error(`Throw an exception.`);
-        //   } catch (error) {
-        //     loading.value = false;
-        //     toast.error(
-        //       "Oops! Could not analyze it. Try again or use analyze from text function.",
-        //       {
-        //         position: "bottom-right",
-        //         timeout: 3000,
-        //         closeOnClick: true,
-        //         pauseOnFocusLoss: true,
-        //         pauseOnHover: true,
-        //         draggable: true,
-        //         draggablePercent: 0.1,
-        //         showCloseButtonOnHover: false,
-        //         hideProgressBar: true,
-        //         closeButton: false,
-        //         icon: true,
-        //         rtl: false,
-        //       }
-        //     );
-        //   }
-        // }, 10000);
-      } catch (error) {
-        loading.value = false;
-        console.log(error);
-        toast.error(
-          "Oops, something went wrong. Retake the photo and try again!",
-          {
-            position: "bottom-right",
-            timeout: 3000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.1,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: false,
-            icon: true,
-            rtl: false,
-          }
-        );
-      }
+      await analyze(capturedImage.value);
     };
 
     const analyze = async (capturedImage) => {
@@ -374,9 +327,6 @@ export default {
         data: { text },
       } = await worker.recognize(capturedImage);
       console.log("text", text);
-
-      // calculate how many of which types there is
-      // color code the ingredients
 
       const textFormatted = text
         .toLowerCase()
@@ -436,7 +386,54 @@ export default {
             progressOrStopExecution();
           });
         };
-        compare();
+        try {
+          compare();
+
+          const exceptionTimeout = setTimeout(() => {
+            try {
+              throw new Error(`Throw an exception.`);
+            } catch (error) {
+              loading.value = false;
+              toast.error(
+                "Oops! Could not analyze it. Try again or use analyze from text function.",
+                {
+                  position: "bottom-right",
+                  timeout: 3000,
+                  closeOnClick: true,
+                  pauseOnFocusLoss: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  draggablePercent: 0.1,
+                  showCloseButtonOnHover: false,
+                  hideProgressBar: true,
+                  closeButton: false,
+                  icon: true,
+                  rtl: false,
+                }
+              );
+            }
+          }, 10000);
+        } catch (error) {
+          loading.value = false;
+          console.log(error);
+          toast.error(
+            "Oops, something went wrong. Retake the photo and try again!",
+            {
+              position: "bottom-right",
+              timeout: 3000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: true,
+              rtl: false,
+            }
+          );
+        }
       }
 
       async function progressOrStopExecution() {
