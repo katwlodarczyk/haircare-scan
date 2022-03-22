@@ -11,7 +11,11 @@
     class="welcomeSwiper"
   >
     <swiper-slide class="flex flex-col text-sm leading-5 px-4">
-      <img class="flex shrink" src="/src/assets/images/slide1girl.svg" alt="girl" />
+      <img
+        class="flex shrink"
+        src="/src/assets/images/slide1girl.svg"
+        alt="girl"
+      />
       <p>Confused about ingredients’ names?</p>
       <p>Not sure what your hair needs?</p>
     </swiper-slide>
@@ -61,7 +65,7 @@ export default {
 .swiper-slide {
   height: 80%;
   text-align: center;
-  font-size: 18px;
+  font-size: 14px;
   background: #fff;
   border-radius: 12px;
 

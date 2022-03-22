@@ -20,8 +20,7 @@
       </svg>
       <span>Go back</span>
     </div>
-    <!-- @todo add skeleton loading -->
-    <div v-if="articleData" class="mx-auto">
+    <div v-if="!loading && articleData" class="mx-auto">
       <img class="mx-auto w-1/2" :src="articleData.image" />
       <div>
         <h1 class="mb-6 font-medium text-xl mx-auto">
@@ -35,6 +34,35 @@
           :source="source"
         />
       </div>
+    </div>
+    <div v-else class="animate-pulse flex flex-col">
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 h-36 w-36 shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 mt-4 h-4 w-44 shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 mt-4 h-3 w-full shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 mt-4 h-3 w-full shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 mt-4 h-3 w-full shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 mt-4 h-3 w-full shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 mt-4 h-3 w-full shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 mt-4 h-3 w-full shadow-sm shadow-brand-purple/10"
+      ></div>
+      <div
+        class="rounded-lg bg-brand-purple self-center opacity-10 mt-4 h-3 w-full shadow-sm shadow-brand-purple/10"
+      ></div>
     </div>
 
     <div
@@ -65,7 +93,6 @@ import Markdown from "vue3-markdown-it";
 import { useRouter, useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
-import "highlight.js/styles/monokai.css";
 
 export default {
   components: {
@@ -77,16 +104,18 @@ export default {
     const articleData = ref();
     const db = getFirestore();
     const source = ref();
+    const loading = ref(false);
     const getArticleData = async () => {
+      loading.value = true;
       const docRef = doc(db, "articles", context.attrs.articleId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         articleData.value = docSnap.data();
         source.value = articleData.value.body.replaceAll("\\n", "\n");
-        // setLoading(false);
+        loading.value = false;
       } else {
         console.log("No article!");
-        // setLoading(false);
+        loading.value = false;
       }
     };
 
@@ -94,7 +123,7 @@ export default {
       getArticleData();
     });
 
-    return { router, route, articleData, source };
+    return { router, route, articleData, source, loading };
   },
 };
 </script>

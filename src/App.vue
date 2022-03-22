@@ -13,6 +13,7 @@
         ].includes($route.name)
       "
     />
+    <ReloadPWA />
 
     <RouterView
       v-slot="{ Component }"
@@ -26,10 +27,13 @@
           'scanner',
           'camera',
           'forgot-password',
+          'privacy-policy',
         ].includes($route.name)
-          ? 'pb-36 pt-28 justify-center'
+          ? 'pb-36 pt-24 justify-center'
           : 'py-10',
-        ['analyzed'].includes($route.name) ? '' : 'text-center',
+        ['analyzed', 'privacy-policy'].includes($route.name)
+          ? ''
+          : 'text-center',
       ]"
     >
       <transition name="fade" mode="out-in">
@@ -53,6 +57,7 @@
 </template>
 
 <script setup>
+import ReloadPWA from "./components/ReloadPWA.vue";
 import { RouterView } from "vue-router";
 import TabBar from "./components/TabBar.vue";
 import Banner from "./components/Banner.vue";

@@ -1,19 +1,20 @@
 import { createRouter, createWebHistory } from "vue-router";
-import WelcomeView from "../views/WelcomeView.vue";
-import LoginVue from "../views/LoginView.vue";
-import RegisterView from "../views/RegisterView.vue";
-import Dashboard from "../views/Dashboard.vue";
-import Education from "../views/Education.vue";
-import Favourite from "../views/Favourite.vue";
-import Settings from "../views/Settings.vue";
-import PageNotFound from "../views/404.vue";
-import ArticleView from "../views/ArticleView.vue";
-import Scanner from "../views/Scanner.vue";
-import AnalyzedView from "../views/AnalyzedView.vue";
-import Camera from "../views/Camera.vue";
-import ResetPassword from "../views/ResetPassword.vue";
-import ResetPasswordSent from "../views/ResetPasswordSent.vue";
-import AnalyzeText from "../views/AnalyzeText.vue";
+const WelcomeView = () => import("../views/WelcomeView.vue");
+const LoginVue = () => import("../views/LoginView.vue");
+const RegisterView = () => import("../views/RegisterView.vue");
+const Dashboard = () => import("../views/Dashboard.vue");
+const Education = () => import("../views/Education.vue");
+const Favourite = () => import("../views/Favourite.vue");
+const Settings = () => import("../views/Settings.vue");
+const PageNotFound = () => import("../views/404.vue");
+const ArticleView = () => import("../views/ArticleView.vue");
+const Scanner = () => import("../views/Scanner.vue");
+const AnalyzedView = () => import("../views/AnalyzedView.vue");
+const Camera = () => import("../views/Camera.vue");
+const ResetPassword = () => import("../views/ResetPassword.vue");
+const ResetPasswordSent = () => import("../views/ResetPasswordSent.vue");
+const AnalyzeText = () => import("../views/AnalyzeText.vue");
+const PrivacyPolicy = () => import("../views/PrivacyPolicy.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -121,6 +122,14 @@ const router = createRouter({
       path: "/settings",
       name: "settings",
       component: Settings,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/privacy-policy",
+      name: "privacy-policy",
+      component: PrivacyPolicy,
       meta: {
         requiresAuth: true,
       },
