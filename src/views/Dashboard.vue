@@ -1,8 +1,27 @@
 <template>
+<div v-if="loading && !scansData" class="w-full h-full flex flex-col">
+    <ViewHeader heading="Your previous scans" icon="time" />
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+    <div
+      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
+    ></div>
+  </div>
   <EmptyState
-    v-if="!loading && !scansData"
+    v-else-if="!loading && !scansData"
     topText="You haven't scanned anything yet."
     bottomText="Use the scanner."
+    :withArrow="true"
   />
   <div v-else-if="!loading && scansData">
     <ViewHeader heading="Your previous scans" icon="time" />
@@ -15,24 +34,7 @@
       @remove-scan="confirmRemove(scan.id)"
     />
   </div>
-  <div v-else-if="loading && !scansData" class="w-full h-full flex flex-col">
-    <ViewHeader heading="Your previous scans" icon="time" />
-    <div
-      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
-    ></div>
-    <div
-      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
-    ></div>
-    <div
-      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
-    ></div>
-    <div
-      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
-    ></div>
-    <div
-      class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
-    ></div>
-  </div>
+  
 </template>
 
 <script>

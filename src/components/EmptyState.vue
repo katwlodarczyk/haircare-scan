@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full flex flex-col flex-none absolute justify-center items-center inset-y-1/4"
+    class="w-full flex flex-col flex-none absolute justify-center items-center h-full"
   >
     <img class="mb-6 flex flex-none" src="../assets/images/lady-back.svg" />
     <p>{{ topText }}</p>
@@ -9,10 +9,10 @@
       v-if="withArrow === true"
       id="arrow"
       xmlns="http://www.w3.org/2000/svg"
-      class="h-10 w-10"
+      class="h-10 w-10 text-gray-900"
       fill="none"
       viewBox="0 0 24 24"
-      stroke="currentColor"
+      stroke="black"
     >
       <path
         stroke-linecap="round"
