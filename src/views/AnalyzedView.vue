@@ -128,7 +128,7 @@
       <h2 class="pb-2">Analyzed ingredients overview</h2>
       <p
         v-if="scanData && scanData.ingredientsTypes"
-        class="text-sm tracking-wide"
+        class="text-sm tracking-wide capitalize space-x-0.5"
       >
         <span
           v-for="(ingredient, index) in scanData.ingredientsTypes"
@@ -146,19 +146,24 @@
     <div v-else class="mt-6">
       <h2 class="pb-2">Grouped by type</h2>
       <div
-        class="text-sm flex flex-row space-x-1 tracking-wide"
+        class="text-sm grid grid-cols-2 tracking-wide"
         :style="{ color: value[0].color }"
         v-for="[key, value] in groupedAnalysis"
         :key="key"
       >
-        <p class="capitalize">{{ key }} -</p>
-        <p>({{ value.length }}) -</p>
-        <p v-for="(ingredient, index) in value" :key="index" class="">
-          {{ ingredient.ingredient }}
-          <span :class="index == value.length - 1 ? 'hidden' : 'inline'"
-            >,</span
+        <div>
+          <span class="capitalize flex-none">{{ key }} </span>
+          <span class="flex-none pl-1">({{ value.length }}) </span>
+        </div>
+        <ul>
+          <li
+            v-for="(ingredient, index) in value"
+            :key="index"
+            class="capitalize"
           >
-        </p>
+            {{ ingredient.ingredient }}
+          </li>
+        </ul>
       </div>
     </div>
     <div v-if="loading && !scanData" class="w-full animate-pulse mt-6">

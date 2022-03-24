@@ -1,19 +1,58 @@
 <template>
-  <div>
-    <ViewHeader heading="Analyze text" icon="text" />
-    <div class="px-4 flex flex-col space-y-4">
-      <p>Paste the ingredients here to analyze them</p>
-      <textarea
-        v-model="text"
-        type="text"
-        name="text"
-        rows="10"
-        class="rounded-lg flex-auto w-full bg-brand-pale px-3 py-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
-      />
-    </div>
-    <BrandButton @click="analyzeText(text)" class="mx-auto w-11/12 mt-3"
-      >Analyze</BrandButton
+  <div class="py-0">
+    <div
+      v-show="loading === true"
+      class="w-screen h-screen absolute z-20 text-white"
     >
+      <div class="absolute z-40 w-screen h-screen bg-gray-700 opacity-75"></div>
+      <div
+        class="absolute inset-y-0 mx-auto w-screen flex flex-col justify-center items-center space-y-4 z-50"
+      >
+        <svg
+          width="38"
+          height="38"
+          viewBox="0 0 38 38"
+          xmlns="http://www.w3.org/2000/svg"
+          stroke="#fff"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <g transform="translate(1 1)" stroke-width="2">
+              <circle stroke-opacity=".5" cx="18" cy="18" r="18" />
+              <path d="M36 18c0-9.94-8.06-18-18-18">
+                <animateTransform
+                  attributeName="transform"
+                  type="rotate"
+                  from="0 18 18"
+                  to="360 18 18"
+                  dur="1s"
+                  repeatCount="indefinite"
+                />
+              </path>
+            </g>
+          </g>
+        </svg>
+        <h1>{{ loadingSentences[i] }}</h1>
+      </div>
+    </div>
+    <div>
+      <ViewHeader heading="Analyze text" icon="text" />
+      <div class="px-4 flex flex-col space-y-4">
+        <p>
+          Paste the ingredients separated by a comma (,) and a space ( ) to
+          analyze them
+        </p>
+        <textarea
+          v-model="text"
+          type="text"
+          name="text"
+          rows="10"
+          class="rounded-lg flex-auto w-full bg-brand-pale px-3 py-2 border border-brand-pink outline-none ring-1 ring-brand-pink focus:shadow-brand-pink"
+        />
+      </div>
+      <BrandButton @click="analyzeText(text)" class="mx-auto w-11/12 mt-3"
+        >Analyze</BrandButton
+      >
+    </div>
   </div>
 </template>
 
@@ -270,7 +309,7 @@ export default {
       }
     };
 
-    return { router, text, analyzeText };
+    return { router, text, analyzeText, loading, loadingSentences, i };
   },
 };
 </script>
