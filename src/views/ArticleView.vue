@@ -30,7 +30,7 @@
           breaks
           linkify
           typographer
-          class="text-left"
+          class="text-left space-y-2 list-inside list-disc"
           :source="source"
         />
       </div>

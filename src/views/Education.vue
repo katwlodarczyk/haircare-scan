@@ -10,7 +10,7 @@
       <p>As they say- knowledge is power!</p>
     </div>
     <div
-      v-if="loading && !articleData"
+      v-if="loading && !articlesData"
       class="animate-pulse grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"
     >
       <div

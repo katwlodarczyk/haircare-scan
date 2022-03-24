@@ -79,7 +79,7 @@
       <svg
         @click="stopCameraStream()"
         xmlns="http://www.w3.org/2000/svg"
-        class="self-end mr-4 text-white h-6 w-6"
+        class="self-end mr-4 text-white h-6 w-6 z-40"
         viewBox="0 0 20 20"
         fill="currentColor"
       >
@@ -257,6 +257,8 @@ export default {
       contentType: "image/png",
     };
 
+    const exceptionTimeout = ref();
+
     onMounted(() => {
       loading.value = true;
       createCameraElement();
@@ -336,15 +338,21 @@ export default {
     };
 
     const worker = createWorker({
-      workerPath: "../node_modules/tesseract.js/dist/worker.min.js",
-      langPath: "../lang-data",
-      corePath: "../node_modules/tesseract.js-core/tesseract-core.wasm.js",
       // logger: (m) => console.log(m),
     });
 
     const analyzeFunction = async () => {
       try {
         await analyze(capturedImage.value);
+        exceptionTimeout.value = () => {
+          setTimeout(() => {
+            try {
+              throw new Error(`An exception is thrown`);
+            } catch (error) {
+              console.error({ error });
+            }
+          }, 6000);
+        };
       } catch (error) {
         loading.value = false;
         toast.error(
@@ -368,6 +376,7 @@ export default {
     };
 
     const analyze = async (capturedImage) => {
+      console.log('analyze')
       const scanStorage = storageRef(
         storage,
         `users-scans/${userUID}/${capturedImageName.value}.png`
@@ -474,6 +483,7 @@ export default {
               console.log(error);
             });
           loading.value = false;
+          clearTimeout(exceptionTimeout);
           await router.push({
             name: "analyzed",
             params: {
@@ -483,6 +493,7 @@ export default {
           });
         } else {
           loading.value = false;
+          clearTimeout(exceptionTimeout);
           toast.error(
             "Oops! Could not analyze it. Try again or use analyze from text function.",
             {
