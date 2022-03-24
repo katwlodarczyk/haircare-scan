@@ -6,6 +6,10 @@ body {
     background-color: #FDFDFD;
 }
 
+canvas {
+    width: 100% !important;
+}
+
 /* animation for toast */
 @keyframes fadeIn {
     from {
