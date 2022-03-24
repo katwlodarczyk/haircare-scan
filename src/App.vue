@@ -30,7 +30,7 @@
           'privacy-policy',
         ].includes($route.name)
           ? 'pb-36 pt-24 justify-center'
-          : 'py-10',
+          : 'pt-10 pb-24',
         ['analyzed', 'privacy-policy'].includes($route.name)
           ? ''
           : 'text-center',

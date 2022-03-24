@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-brand-nude h-full flex flex-col space-y-10">
+  <div class="bg-brand-nude h-full flex flex-col space-y-12">
     <Banner withSlogan class="" />
     <div class="px-10">
       <h1 class="text-2xl font-medium pb-8">Login to your account</h1>
@@ -44,7 +44,7 @@
           >Login</BrandButton
         >
       </Form>
-      <p class="text-sm">
+      <p class="text-sm mt-4">
         or
         <router-link to="/register" class="font-medium"
           >Create an account</router-link

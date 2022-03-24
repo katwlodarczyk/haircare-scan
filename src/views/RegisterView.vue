@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-brand-nude h-full flex flex-col space-y-10">
+  <div class="bg-brand-nude h-full flex flex-col space-y-12">
     <Banner withSlogan class="" />
     <div class="px-10">
       <h1 class="text-2xl font-medium pb-8">Create a new account</h1>
@@ -39,7 +39,7 @@
           >Register</BrandButton
         >
       </Form>
-      <p class="text-sm">
+      <p class="text-sm mt-4">
         Have an account?
         <router-link to="/login" class="font-medium">Login</router-link>
       </p>
