@@ -1,5 +1,5 @@
 <template>
-  <div class="font-koho text-gray-700">
+  <div class="h-screen overflow-y-auto font-koho text-gray-700">
     <Banner
       v-show="
         isAuthenticated &&
@@ -30,7 +30,7 @@
           'privacy-policy',
         ].includes($route.name)
           ? 'pb-36 pt-24 justify-center'
-          : 'pt-10 pb-24',
+          : 'py-10 justify-center',
         ['analyzed', 'privacy-policy'].includes($route.name)
           ? ''
           : 'text-center',

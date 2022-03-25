@@ -36,10 +36,10 @@
     </div>
     <div>
       <ViewHeader heading="Analyze text" icon="text" />
-      <div class="px-4 flex flex-col space-y-4">
-        <p>
+      <div class="px-4 flex flex-col space-y-4 -mt-6">
+        <p class="px-6">
           Paste the ingredients separated by a comma (,) and a space ( ) to
-          analyze them
+          analyze them.
         </p>
         <textarea
           v-model="text"

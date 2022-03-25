@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-brand-nude h-full flex flex-col space-y-12">
+  <div class="bg-brand-nude h-full flex flex-col space-y-6">
     <Banner withSlogan class="" />
     <div class="px-10">
       <h1 class="text-2xl font-medium pb-8">Create a new account</h1>
@@ -44,21 +44,22 @@
         <router-link to="/login" class="font-medium">Login</router-link>
       </p>
     </div>
-
-    <BrandButton
-      @click="() => handleSocialSubmit('google')"
-      class="mx-auto mt-12 flex flex-row inset-x-0 bottom-20"
-      type="dark"
-      text="xs"
-    >
-      or use your
-      <img
-        src="../assets/icons/google-icon.svg"
-        alt="google icon"
-        class="px-2"
-      />
-      account
-    </BrandButton>
+    <div class="bg-brand-nude pt-4 pb-8">
+      <BrandButton
+        @click="() => handleSocialSubmit('google')"
+        class="mx-auto flex flex-row inset-x-0 bottom-20"
+        type="dark"
+        text="xs"
+      >
+        or use your
+        <img
+          src="../assets/icons/google-icon.svg"
+          alt="google icon"
+          class="px-2"
+        />
+        account
+      </BrandButton>
+    </div>
   </div>
 </template>
 

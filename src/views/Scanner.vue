@@ -1,5 +1,5 @@
 <template>
-  <div class="py-0">
+  <div class="bg-gray-800 h-screen">
     <div
       v-show="loading === true"
       class="w-screen h-screen absolute z-20 text-white"
@@ -73,9 +73,7 @@
         />
       </svg>
     </div>
-    <div
-      class="bg-gray-800 w-screen h-screen flex flex-col justify-between pt-12 pb-8"
-    >
+    <div class="bg-gray-800 w-screen h-full flex flex-col justify-between pt-2">
       <svg
         @click="stopCameraStream()"
         xmlns="http://www.w3.org/2000/svg"
@@ -376,7 +374,7 @@ export default {
     };
 
     const analyze = async (capturedImage) => {
-      console.log('analyze')
+      console.log("analyze");
       const scanStorage = storageRef(
         storage,
         `users-scans/${userUID}/${capturedImageName.value}.png`

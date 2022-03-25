@@ -1,5 +1,5 @@
 <template>
-  <div class="py-0">
+  <div class="bg-gray-800 h-screen">
     <div
       v-show="loading === true"
       class="w-screen h-screen absolute z-20 text-white"
@@ -73,9 +73,7 @@
         />
       </svg>
     </div>
-    <div
-      class="bg-gray-800 w-screen h-screen flex flex-col justify-between pt-12 pb-8"
-    >
+    <div class="bg-gray-800 w-screen h-full flex flex-col justify-between pt-2">
       <div class="relative w-full py-8">
         <svg
           @click="stopCameraStream()"
@@ -296,7 +294,6 @@ export default {
       capturedImage.value = "";
       isPhotoTaken.value = !isPhotoTaken.value;
     };
-
 
     const save = async () => {
       loading.value = true;
