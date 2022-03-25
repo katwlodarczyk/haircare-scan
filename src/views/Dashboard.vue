@@ -1,5 +1,5 @@
 <template>
-<div v-if="loading && !scansData" class="w-full h-full flex flex-col">
+  <div v-if="loading && !scansData" class="w-full h-full flex flex-col">
     <ViewHeader heading="Your previous scans" icon="time" />
     <div
       class="animate-pulse flex odd:bg-brand-pale even:bg-brand-nude w-full h-17 opacity-70"
@@ -34,7 +34,6 @@
       @remove-scan="confirmRemove(scan.id)"
     />
   </div>
-  
 </template>
 
 <script>
@@ -81,21 +80,6 @@ export default {
         });
         scansData.value = scans;
       }
-      // const lastVisible = docSnap.docs[docSnap.docs.length - 1];
-      // console.log("last", lastVisible);
-      // const next = query(
-      //   scansRef,
-      //   orderBy("date", "desc"),
-      //   startAfter(lastVisible),
-      //   limit(25)
-      // );
-      // if (next.size) {
-      //   next.forEach((doc) => {
-      //     scans.push({ ...doc.data(), ...{ id: doc.id } });
-      //   });
-      //   scansData.value.push(scans);
-      // }
-
       loading.value = false;
     };
 
@@ -126,31 +110,88 @@ export default {
     const removeScan = async (id) => {
       loading.value = true;
       const scanRef = storageRef(storage, `users-scans/${userUID}/${id}.png`);
+      const productPhotoRef = storageRef(
+        storage,
+        `product-photos/${userUID}/${id}.png`
+      );
       // Delete the file
-      await deleteObject(scanRef)
-        .then(async () => {
-          await deleteDoc(doc(db, `scans-${userUID}`, id));
-          await toast.info("Scan has been removed.", {
-            position: "bottom-right",
-            timeout: 1000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.1,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: false,
-            icon: false,
-            rtl: false,
+      if (scansData.value.scanRef && !scansData.value.productPhotoRef) {
+        await deleteObject(scanRef)
+          .then(async () => {
+            await deleteDoc(doc(db, `scans-${userUID}`, id));
+            await toast.info("Scan has been removed.", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: false,
+              rtl: false,
+            });
+            await getScansData();
+            await (loading.value = false);
+          })
+          .catch((error) => {
+            loading.value = false;
+            console.log("error", error);
           });
-          await getScansData();
-          await (loading.value = false);
-        })
-        .catch((error) => {
-          loading.value = false;
-          console.log("error", error);
-        });
+      } else if (scansData.value.productPhotoRef && !scansData.value.scanRef) {
+        await deleteObject(productPhotoRef)
+          .then(async () => {
+            await deleteDoc(doc(db, `scans-${userUID}`, id));
+            await toast.info("Scan has been removed.", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: false,
+              rtl: false,
+            });
+            await getScansData();
+            await (loading.value = false);
+          })
+          .catch((error) => {
+            loading.value = false;
+            console.log("error", error);
+          });
+      } else if (scansData.value.scanRef && scansData.value.productPhotoRef) {
+        await deleteObject(scanRef)
+          .then(deleteObject(productPhotoRef))
+          .then(async () => {
+            await deleteDoc(doc(db, `scans-${userUID}`, id));
+            await toast.info("Scan has been removed.", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: false,
+              rtl: false,
+            });
+            await getScansData();
+            await (loading.value = false);
+          })
+          .catch((error) => {
+            loading.value = false;
+            console.log("error", error);
+          });
+      }
     };
 
     return { scansData, removeScan, loading, confirmRemove };
