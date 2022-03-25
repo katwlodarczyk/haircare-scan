@@ -155,13 +155,13 @@
           <span class="capitalize flex-none">{{ key }} </span>
           <span class="flex-none pl-1">({{ value.length }}) </span>
         </div>
-        <ul>
+        <ul class="list-none">
           <li
             v-for="(ingredient, index) in value"
             :key="index"
             class="capitalize"
           >
-            {{ ingredient.ingredient }}
+          - {{ ingredient.ingredient }}
           </li>
         </ul>
       </div>

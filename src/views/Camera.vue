@@ -204,7 +204,7 @@ export default {
     const db = getFirestore();
     const toast = useToast();
     const userUID = localStorage.getItem("userUID");
-    const capturedImageName = ref("");
+    const capturedImageName = ref(props.scanId);
     const storage = getStorage();
     const router = useRouter();
     const route = useRoute();
@@ -281,13 +281,7 @@ export default {
         .getElementById("photoTaken")
         .toBlob(function (blob) {
           const url = URL.createObjectURL(blob);
-          getNameFromUrl(url);
         });
-    }
-
-    function getNameFromUrl(url) {
-      const urlArray = url.split("/");
-      capturedImageName.value = urlArray.pop();
     }
 
     const retake = () => {

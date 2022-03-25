@@ -26,12 +26,12 @@
   <div v-else-if="!loading && scansData">
     <ViewHeader heading="Your previous scans" icon="time" />
     <ScanListItem
-      v-for="scan in scansData"
-      :key="scan.id"
+      v-for="(scan, index) in scansData"
+      :key="index"
       :title="scan.productName ? scan.productName : scan.date"
       :id="scan.id"
       :productPhoto="scan.productPhotoRef ? scan.productPhotoRef : ''"
-      @remove-scan="confirmRemove(scan.id)"
+      @remove-scan="confirmRemove(scan.id, index)"
     />
   </div>
 </template>
@@ -83,12 +83,12 @@ export default {
       loading.value = false;
     };
 
-    const confirmRemove = async (id) => {
+    const confirmRemove = async (id, index) => {
       toast.error(
         {
           component: ConfirmToast,
           listeners: {
-            delete: async () => await removeScan(id),
+            delete: async () => await removeScan(id, index),
           },
         },
         {
@@ -107,7 +107,7 @@ export default {
       );
     };
 
-    const removeScan = async (id) => {
+    const removeScan = async (id, index) => {
       loading.value = true;
       const scanRef = storageRef(storage, `users-scans/${userUID}/${id}.png`);
       const productPhotoRef = storageRef(
@@ -115,10 +115,13 @@ export default {
         `product-photos/${userUID}/${id}.png`
       );
       // Delete the file
-      if (scansData.value.scanRef && !scansData.value.productPhotoRef) {
-        await deleteObject(scanRef)
+      if (
+        scansData.value[index].scanRef &&
+        !scansData.value[index].productPhotoRef
+      ) {
+        await deleteObject(scanRef);
+        await deleteDoc(doc(db, `scans-${userUID}`, id))
           .then(async () => {
-            await deleteDoc(doc(db, `scans-${userUID}`, id));
             await toast.info("Scan has been removed.", {
               position: "bottom-right",
               timeout: 1000,
@@ -140,10 +143,13 @@ export default {
             loading.value = false;
             console.log("error", error);
           });
-      } else if (scansData.value.productPhotoRef && !scansData.value.scanRef) {
-        await deleteObject(productPhotoRef)
+      } else if (
+        scansData.value[index].productPhotoRef &&
+        !scansData.value[index].scanRef
+      ) {
+        await deleteObject(productPhotoRef);
+        await deleteDoc(doc(db, `scans-${userUID}`, id))
           .then(async () => {
-            await deleteDoc(doc(db, `scans-${userUID}`, id));
             await toast.info("Scan has been removed.", {
               position: "bottom-right",
               timeout: 1000,
@@ -164,12 +170,29 @@ export default {
           .catch((error) => {
             loading.value = false;
             console.log("error", error);
+            toast.error("Something went wrong. Try again.", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: false,
+              rtl: false,
+            });
           });
-      } else if (scansData.value.scanRef && scansData.value.productPhotoRef) {
-        await deleteObject(scanRef)
-          .then(deleteObject(productPhotoRef))
+      } else if (
+        scansData.value[index].scanRef &&
+        scansData.value[index].productPhotoRef
+      ) {
+        await deleteObject(scanRef);
+        await deleteObject(productPhotoRef);
+        await deleteDoc(doc(db, `scans-${userUID}`, id))
           .then(async () => {
-            await deleteDoc(doc(db, `scans-${userUID}`, id));
             await toast.info("Scan has been removed.", {
               position: "bottom-right",
               timeout: 1000,
@@ -190,6 +213,58 @@ export default {
           .catch((error) => {
             loading.value = false;
             console.log("error", error);
+            toast.error("Something went wrong. Try again.", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: false,
+              rtl: false,
+            });
+          });
+      } else {
+        await deleteDoc(doc(db, `scans-${userUID}`, id))
+          .then(
+            await toast.info("Scan has been removed.", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: false,
+              rtl: false,
+            }),
+            await getScansData(),
+            await (loading.value = false)
+          )
+          .catch((error) => {
+            loading.value = false;
+            console.log("error", error);
+            toast.error("Something went wrong. Try again.", {
+              position: "bottom-right",
+              timeout: 1000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.1,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: false,
+              rtl: false,
+            });
           });
       }
     };
