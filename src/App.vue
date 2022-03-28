@@ -1,125 +1,81 @@
-<script setup>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "@/components/HelloWorld.vue";
-</script>
-
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
+  <div class="h-screen overflow-y-auto font-koho text-gray-700">
+    <Banner
+      v-show="
+        isAuthenticated &&
+        ![
+          'login',
+          'welcome',
+          'register',
+          'scanner',
+          'camera',
+          'forgot-password',
+        ].includes($route.name)
+      "
     />
+    <ReloadPWA />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+    <RouterView
+      v-slot="{ Component }"
+      class="flex flex-col"
+      :class="[
+        isAuthenticated &&
+        ![
+          'login',
+          'welcome',
+          'register',
+          'scanner',
+          'camera',
+          'forgot-password',
+          'privacy-policy',
+        ].includes($route.name)
+          ? 'pb-36 pt-24 justify-center'
+          : !['welcome'].includes($route.name)
+          ? 'py-10 justify-center'
+          : 'justify-center',
+        ['analyzed', 'privacy-policy'].includes($route.name)
+          ? ''
+          : 'text-center',
+      ]"
+    >
+      <transition name="fade" mode="out-in">
+        <component :is="Component" :key="$route.path"></component>
+      </transition>
+    </RouterView>
+    <TabBar
+      v-if="
+        isAuthenticated &&
+        ![
+          'login',
+          'welcome',
+          'register',
+          'scanner',
+          'camera',
+          'forgot-password',
+        ].includes($route.name)
+      "
+    />
+  </div>
 </template>
 
-<style>
-@import "@/assets/base.css";
+<script setup>
+import ReloadPWA from "./components/ReloadPWA.vue";
+import { RouterView } from "vue-router";
+import TabBar from "./components/TabBar.vue";
+import Banner from "./components/Banner.vue";
+import useAuth from "./services/useAuth";
+import { useRoute } from "vue-router";
+const { isAuthenticated } = useAuth();
+const route = useRoute;
+</script>
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s;
 }
-
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
