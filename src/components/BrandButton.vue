@@ -4,6 +4,8 @@
     :class="[
       type === 'dark'
         ? 'bg-brand-purple hover:bg-brand-pink'
+        : type === 'unbutton'
+        ? 'bg-brand-pink hover:bg-brand-pink cursor-default'
         : 'bg-brand-pink hover:bg-brand-purple',
       text === 'xs' ? 'text-xs' : 'text-base',
     ]"
