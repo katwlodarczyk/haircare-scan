@@ -7,7 +7,7 @@
     >
       <Banner withSlogan class="mb-4" />
       <SliderComponent></SliderComponent>
-      <div v-if="downloaded">
+      <div v-if="downloaded" class="pb-10">
         <router-link to="/register"
           ><BrandButton>Create an account</BrandButton></router-link
         >
@@ -18,7 +18,7 @@
           >
         </p>
       </div>
-      <PWAprompt :installed="downloaded" />
+      <PWAprompt v-else :installed="downloaded" />
     </div>
     <DesktopView v-else />
   </div>
