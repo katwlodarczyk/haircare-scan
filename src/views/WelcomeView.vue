@@ -2,8 +2,8 @@
   <div>
     <div
       v-if="isMobile()"
-      class="h-screen w-screen flex flex-col space-y-4 bg-brand-nude items-center -my-10"
-      :class="downloaded ? '' : 'pb-24'"
+      class="h-screen w-screen flex flex-col space-y-4 bg-brand-nude items-center"
+      :class="downloaded ? '' : 'pb-20'"
     >
       <Banner withSlogan class="mb-4" />
       <SliderComponent></SliderComponent>

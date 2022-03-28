@@ -1,45 +1,78 @@
 <template>
   <transition name="fade-up-in" appear>
-    <div
-      v-if="shown"
-      @click="installPWA"
-      class="z-30 bg-brand-pink absolute bottom-0 left-o right-0 rounded-t-3xl text-white py-8 text-xl flex flex-col w-full"
-      :class="[{ shown }]"
-    >
-      Download on you phone
+    <div class="">
+      <div
+        v-if="shown"
+        @click="installPWA"
+        class="z-30 bg-brand-pink absolute bottom-0 left-o right-0 rounded-t-3xl text-white py-8 text-xl flex flex-col w-full"
+        :class="[{ shown }]"
+      >
+        Download on you phone
+      </div>
+      <IOSprompt v-if="showIOSprompt" @close-prompt="close"></IOSprompt>
     </div>
   </transition>
 </template>
 
 <script>
+import { onBeforeMount, ref } from "vue";
+// import { PWAPrompt as IOSPrompt } from "vue2-ios-pwa-prompt";
+import IOSprompt from "../components/IOSprompt.vue";
+
 export default {
+  components: {
+    IOSprompt,
+  },
   props: {
     installed: {
       type: Boolean,
       required: true,
     },
   },
-  data: (props) => ({
-    installEvent: undefined,
-    shown: props.installed ? false : true,
-  }),
-  beforeMount() {
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      this.installEvent = e;
-      this.shown = true;
-    });
-  },
-  methods: {
-    installPWA() {
-      this.installEvent.prompt();
-      this.installEvent.userChoice.then((choice) => {
-        console.log(choice);
+  setup(props) {
+    const showIOSprompt = ref(false);
+    const shown = ref(props.installed ? false : true);
+    let isIOS = /OS 1([3-9])_([4-9])/.test(window.navigator.userAgent);
+    let installEvent = null;
+
+    onBeforeMount(() => {
+      captureEvent();
+
+      window.addEventListener("appinstalled", (e) => {
+        console.log(e);
       });
-    },
-    dismissPrompt() {
-      this.shown = false;
-    },
+    });
+
+    const captureEvent = () => {
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        installEvent = e;
+        shown.value = true;
+      });
+    };
+
+    function installPWA() {
+      showIOSprompt.value = true;
+      installEvent.prompt();
+      installEvent.userChoice.then((choice) => {
+        if (choice.outcome === "accepted") {
+          console.log("install app");
+          dismissPrompt();
+        } else {
+          console.log("do not install app");
+        }
+        installEvent = null;
+      });
+    }
+    function dismissPrompt() {
+      shown.value = false;
+    }
+
+    function close() {
+      showIOSprompt.value = false;
+    }
+
+    return { shown, installPWA, isIOS, showIOSprompt, close };
   },
 };
 </script>
