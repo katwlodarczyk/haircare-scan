@@ -1,35 +1,37 @@
-# haircare-scan
+# ![logo](src/assets/images/logo.svg)
 
-This template should help get you started developing with Vue 3 in Vite.
+🚀 hosted at: https://haircare-scan.web.app/
 
-## Recommended IDE Setup
+📲 PWA - Add it to your home screen to use as an app! 
+#
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+### ✨ About
 
-## Customize configuration
+Haircare Scan is an app that will help you decipher long and hard to read ingredients list from all of your haircare products!
+Don't trust marketing slogans, simply scan the ingredient list and know what really is inside the bottle!
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+#
 
-## Project Setup
+### 🛠 Technologies used: 
+- Vue 3
+- Tailwind CSS
+- Firebase with FireStore
+- Tesseract.js
+- Swiper
 
-```sh
-npm install
-```
+Also using: 
+- [vue-router](https://router.vuejs.org/)
+- [vue-toastification](https://vue-toastification.maronato.dev/)
+- [vue3-markdown-it](https://janguillermo.github.io/vue3-markdown-it/)
+- [luxon](https://moment.github.io/luxon/#/)
+- [yup](https://github.com/jquense/yup)
 
-### Compile and Hot-Reload for Development
+#
 
-```sh
-npm run dev
-```
+### If you would like to run the project locally:
 
-### Compile and Minify for Production
+```npm install``` to install all dependencies
 
-```sh
-npm run build
-```
+```npm run dev``` to run the server
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+#
