@@ -172,7 +172,7 @@
     <div v-else class="flex flex-row font-medium mt-6 space-x-2">
       <span>Something not right?</span>
       <a
-        href="mailto:haircare-scan@gmail.com?subject=Something not right"
+        href="mailto:haircare.scan@gmail.com?subject=Something not right"
         class="underline underline-offset-2"
       >
         Contact Us!

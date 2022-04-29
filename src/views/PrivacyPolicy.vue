@@ -11,7 +11,7 @@
         information and your right to privacy. If you have any questions or
         concerns about our policy, or our practices with regards to your
         personal information, please contact us at
-        <a href="mailto:haircare-scan@gmail.com">haircare-scan@gmail.com</a
+        <a href="mailto:haircare.scan@gmail.com">haircare.scan@gmail.com</a
         >.<br />
         When you visit our website, and use our services, you trust us with your
         personal information. We take your privacy very seriously.<br />
@@ -203,7 +203,7 @@
         will deactivate the account and take reasonable measures to promptly
         delete such data from our records. If you become aware of any data we
         have collected from children under age 18, please contact us at
-        <a href="mailto:haircare-scan@gmail.com">haircare-scan@gmail.com</a>.
+        <a href="mailto:haircare.scan@gmail.com">haircare.scan@gmail.com</a>.
       </p>
 
       <h5 id="6">6. WHAT ARE YOUR PRIVACY RIGHTS?</h5>
@@ -293,7 +293,7 @@
 
       <p>
         If you have questions or comments about this policy, you may email us at
-        <a href="mailto:haircare-scan@gmail.com">haircare-scan@gmail.com</a>
+        <a href="mailto:haircare.scan@gmail.com">haircare.scan@gmail.com</a>
       </p>
 
       <h5 id="h11">
@@ -306,7 +306,7 @@
         information, or delete it in some circumstances. To request to review,
         update, or delete your personal information, please contact us by email
         at
-        <a href="mailto:haircare-scan@gmail.com">haircare-scan@gmail.com</a>. We
+        <a href="mailto:haircare.scan@gmail.com">haircare.scan@gmail.com</a>. We
         will respond to your request within 30 days.
       </p>
       <br />
