@@ -105,7 +105,7 @@
         class="w-full flex flex-row justify-between odd:bg-brand-pale even:bg-brand-nude px-6 py-4 text-lg space-x-4"
       >
         <a
-          href="mailto:haircare-scan@gmail.com?subject=Mail about HairCare Scan app"
+          href="mailto:haircare.scan@gmail.com?subject=Mail about HairCare Scan app"
           class="flex flex-row space-x-4"
           >Contact Us</a
         >

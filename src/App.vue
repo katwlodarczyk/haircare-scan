@@ -9,7 +9,8 @@
           'register',
           'scanner',
           'camera',
-          'forgot-password',
+          'reset-password',
+          'reset-password-sent',
         ].includes($route.name)
       "
     />
@@ -26,7 +27,8 @@
           'register',
           'scanner',
           'camera',
-          'forgot-password',
+          'reset-password',
+          'reset-password-sent',
           'privacy-policy',
         ].includes($route.name)
           ? 'pb-36 pt-24 justify-center'
@@ -51,7 +53,8 @@
           'register',
           'scanner',
           'camera',
-          'forgot-password',
+          'reset-password',
+          'reset-password-sent',
         ].includes($route.name)
       "
     />
